@@ -8,6 +8,22 @@ let dbEngine = null; // 'mysql' | 'sqlite'
 export async function getEngine() {
   if (dbEngine) return dbEngine;
 
+  // Dynamically load .env.local if MYSQL_HOST is not yet loaded into process.env
+  if (!process.env.MYSQL_HOST) {
+    try {
+      const envPath = path.join(process.cwd(), '.env.local');
+      if (fs.existsSync(envPath)) {
+        const content = fs.readFileSync(envPath, 'utf8');
+        content.split('\n').forEach(line => {
+          const match = line.match(/^\s*([\w_]+)\s*=\s*(.*)\s*$/);
+          if (match && !process.env[match[1]]) {
+            process.env[match[1]] = match[2].trim();
+          }
+        });
+      }
+    } catch {}
+  }
+
   // Check if MySQL connection environment variables are explicitly provided
   const hasMysqlConfig = process.env.MYSQL_HOST && process.env.MYSQL_USER;
 
@@ -66,8 +82,12 @@ export async function getEngine() {
       }
     }
     const dbPath = path.join(dbDir, 'portbuilder.db');
-    sqliteDb = new Database(dbPath);
-    sqliteDb.pragma('journal_mode = WAL');
+    sqliteDb = new Database(dbPath, { readonly: false });
+    try {
+      sqliteDb.pragma('journal_mode = WAL');
+    } catch {
+      sqliteDb.pragma('journal_mode = DELETE');
+    }
     sqliteDb.pragma('foreign_keys = ON');
     dbEngine = 'sqlite';
     console.log(`✅ Using SQLite database engine (${dbPath})`);
