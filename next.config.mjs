@@ -9,7 +9,7 @@ const nextConfig = {
     ],
     unoptimized: false,
   },
-  serverExternalPackages: ['mysql2'],
+  serverExternalPackages: ['better-sqlite3', 'mysql2'],
 };
 
 export default nextConfig;
