@@ -138,13 +138,14 @@ export default function DashboardOverview() {
         <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
           <Link href="/dashboard/edit" className="btn btn-secondary">✏️ Edit Content</Link>
           <Link href="/dashboard/themes" className="btn btn-secondary">🎨 Change Theme</Link>
+          <a href="/api/portfolio/export" download className="btn btn-secondary" style={{ borderColor: 'var(--color-primary)' }}>📦 Export HTML Site</a>
           <a href="/api/resume" target="_blank" className="btn btn-secondary">📄 Download Resume</a>
           {user && (
             <button
               className="btn btn-secondary"
               onClick={() => {
                 navigator.clipboard.writeText(`${window.location.origin}/portfolio/${user.username}`);
-                alert('Portfolio URL copied!');
+                alert('Portfolio URL copied to clipboard!');
               }}
             >
               📋 Copy Portfolio URL
