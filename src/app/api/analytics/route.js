@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { query, queryOne, ensureDbInitialized } from '@/lib/db';
+import { query, queryOne, ensureDbInitialized, getEngine } from '@/lib/db';
 import { getCurrentUser } from '@/lib/auth';
 import { generateId } from '@/lib/utils';
 
@@ -17,17 +17,11 @@ export async function GET() {
       return NextResponse.json({ error: 'Portfolio not found' }, { status: 404 });
     }
 
+    const engine = await getEngine();
+
     // Total views
     const totalResult = await queryOne(
       'SELECT COUNT(*) as total FROM analytics WHERE portfolio_id = ?',
-      [portfolio.id]
-    );
-
-    // Views in last 7 days, grouped by day
-    const dailyViews = await query(
-      `SELECT DATE(visited_at) as date, COUNT(*) as views
-       FROM analytics WHERE portfolio_id = ? AND visited_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)
-       GROUP BY DATE(visited_at) ORDER BY date`,
       [portfolio.id]
     );
 
@@ -45,16 +39,54 @@ export async function GET() {
       [portfolio.id]
     );
 
-    // Views today
-    const todayResult = await queryOne(
-      `SELECT COUNT(*) as total FROM analytics WHERE portfolio_id = ? AND DATE(visited_at) = CURDATE()`,
-      [portfolio.id]
-    );
+    // Cross-engine date aggregation
+    let dailyViews = [];
+    let todayViewsCount = 0;
+
+    if (engine === 'mysql') {
+      dailyViews = await query(
+        `SELECT DATE(visited_at) as date, COUNT(*) as views
+         FROM analytics WHERE portfolio_id = ? AND visited_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)
+         GROUP BY DATE(visited_at) ORDER BY date`,
+        [portfolio.id]
+      );
+      const todayResult = await queryOne(
+        `SELECT COUNT(*) as total FROM analytics WHERE portfolio_id = ? AND DATE(visited_at) = CURDATE()`,
+        [portfolio.id]
+      );
+      todayViewsCount = todayResult?.total || 0;
+    } else {
+      // SQLite date handling
+      const sevenDaysAgo = new Date();
+      sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+      const isoSevenDays = sevenDaysAgo.toISOString();
+
+      const rawRows = await query(
+        `SELECT visited_at FROM analytics WHERE portfolio_id = ? AND visited_at >= ?`,
+        [portfolio.id, isoSevenDays]
+      );
+
+      const todayStr = new Date().toISOString().split('T')[0];
+      const dateCounts = {};
+
+      (rawRows || []).forEach(row => {
+        const dStr = new Date(row.visited_at).toISOString().split('T')[0];
+        dateCounts[dStr] = (dateCounts[dStr] || 0) + 1;
+        if (dStr === todayStr) {
+          todayViewsCount++;
+        }
+      });
+
+      dailyViews = Object.keys(dateCounts).sort().map(d => ({
+        date: d,
+        views: dateCounts[d],
+      }));
+    }
 
     return NextResponse.json({
       totalViews: totalResult?.total || 0,
       uniqueVisitors: uniqueResult?.total || 0,
-      todayViews: todayResult?.total || 0,
+      todayViews: todayViewsCount,
       dailyViews: dailyViews || [],
       topReferrers: referrers || [],
     });
@@ -86,7 +118,7 @@ export async function POST(request) {
 
     // Get IP from headers
     const forwarded = request.headers.get('x-forwarded-for');
-    const ip = forwarded ? forwarded.split(',')[0].trim() : 'unknown';
+    const ip = forwarded ? forwarded.split(',')[0].trim() : '127.0.0.1';
 
     await query(
       'INSERT INTO analytics (id, portfolio_id, referrer, user_agent, ip_address) VALUES (?, ?, ?, ?, ?)',

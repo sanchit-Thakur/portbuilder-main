@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { generateId } from '@/lib/utils';
 import { SKILL_CATEGORIES } from '@/lib/constants';
+import PortfolioRenderer from '@/components/portfolio/PortfolioRenderer';
 
 const TABS = [
   { id: 'hero', label: '🏠 Hero', icon: '🏠' },
@@ -15,12 +16,15 @@ const TABS = [
   { id: 'contact', label: '📧 Contact', icon: '📧' },
 ];
 
+const PRESET_COLORS = ['#6C63FF', '#00d4aa', '#ff6b35', '#3a86ff', '#ec4899', '#f59e0b', '#10b981'];
+
 export default function EditPortfolio() {
   const [activeTab, setActiveTab] = useState('hero');
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [toast, setToast] = useState(null);
+  const [splitView, setSplitView] = useState(true);
 
   useEffect(() => {
     fetch('/api/portfolio')
@@ -46,7 +50,7 @@ export default function EditPortfolio() {
         body: JSON.stringify(updates),
       });
       if (!res.ok) throw new Error('Failed to save');
-      showToast('Changes saved!');
+      showToast('Changes saved successfully!');
     } catch {
       showToast('Failed to save. Try again.', 'error');
     } finally {
@@ -102,11 +106,21 @@ export default function EditPortfolio() {
       <div className="editor-header">
         <div>
           <h1 style={{ fontSize: 'var(--text-2xl)', fontWeight: 700 }}>Edit Portfolio</h1>
-          <p className="text-muted" style={{ marginTop: '0.25rem' }}>Manage your portfolio content section by section</p>
+          <p className="text-muted" style={{ marginTop: '0.25rem' }}>Customize your content with real-time live preview</p>
         </div>
-        <button className="btn btn-primary" onClick={handleSave} disabled={saving}>
-          {saving ? <><span className="spinner" style={{ width: 16, height: 16, borderWidth: 2 }}></span> Saving...</> : '💾 Save All Changes'}
-        </button>
+        <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+          <button
+            type="button"
+            className="btn btn-secondary"
+            onClick={() => setSplitView(!splitView)}
+            style={{ fontSize: '0.85rem' }}
+          >
+            {splitView ? '👁️ Full Editor' : '📱 Split Live Preview'}
+          </button>
+          <button className="btn btn-primary" onClick={handleSave} disabled={saving}>
+            {saving ? <><span className="spinner" style={{ width: 16, height: 16, borderWidth: 2 }}></span> Saving...</> : '💾 Save All Changes'}
+          </button>
+        </div>
       </div>
 
       {/* Tabs */}
@@ -122,16 +136,36 @@ export default function EditPortfolio() {
         ))}
       </div>
 
-      {/* Tab Content */}
-      <div className="editor-content card">
-        {activeTab === 'hero' && <HeroEditor data={data} updatePortfolio={updatePortfolio} uploadImage={uploadImage} />}
-        {activeTab === 'about' && <AboutEditor data={data} updatePortfolio={updatePortfolio} uploadImage={uploadImage} />}
-        {activeTab === 'skills' && <SkillsEditor data={data} setData={setData} />}
-        {activeTab === 'projects' && <ProjectsEditor data={data} setData={setData} uploadImage={uploadImage} />}
-        {activeTab === 'experience' && <ExperienceEditor data={data} setData={setData} />}
-        {activeTab === 'education' && <EducationEditor data={data} setData={setData} />}
-        {activeTab === 'testimonials' && <TestimonialsEditor data={data} setData={setData} />}
-        {activeTab === 'contact' && <ContactEditor data={data} updatePortfolio={updatePortfolio} />}
+      {/* Main Layout Container */}
+      <div className={`editor-main-container ${splitView ? 'split' : 'full'}`}>
+        {/* Editor Form Panel */}
+        <div className="editor-content card">
+          {activeTab === 'hero' && <HeroEditor data={data} updatePortfolio={updatePortfolio} uploadImage={uploadImage} />}
+          {activeTab === 'about' && <AboutEditor data={data} updatePortfolio={updatePortfolio} uploadImage={uploadImage} />}
+          {activeTab === 'skills' && <SkillsEditor data={data} setData={setData} />}
+          {activeTab === 'projects' && <ProjectsEditor data={data} setData={setData} uploadImage={uploadImage} />}
+          {activeTab === 'experience' && <ExperienceEditor data={data} setData={setData} />}
+          {activeTab === 'education' && <EducationEditor data={data} setData={setData} />}
+          {activeTab === 'testimonials' && <TestimonialsEditor data={data} setData={setData} />}
+          {activeTab === 'contact' && <ContactEditor data={data} updatePortfolio={updatePortfolio} />}
+        </div>
+
+        {/* Live Preview Panel */}
+        {splitView && (
+          <div className="editor-live-preview-panel">
+            <div className="preview-chrome-header">
+              <div className="chrome-dots">
+                <span className="dot red"></span>
+                <span className="dot yellow"></span>
+                <span className="dot green"></span>
+              </div>
+              <div className="chrome-url">Real-time Live Preview</div>
+            </div>
+            <div className="preview-scroll-area">
+              <PortfolioRenderer data={data} />
+            </div>
+          </div>
+        )}
       </div>
 
       <style jsx>{`
@@ -167,7 +201,57 @@ export default function EditPortfolio() {
           border-bottom-color: var(--color-primary);
           background: rgba(108, 99, 255, 0.06);
         }
+        .editor-main-container {
+          display: grid;
+          gap: 1.5rem;
+        }
+        .editor-main-container.split {
+          grid-template-columns: 1fr 1fr;
+        }
+        .editor-main-container.full {
+          grid-template-columns: 1fr;
+        }
         .editor-content { padding: 2rem; }
+        .editor-live-preview-panel {
+          border: 1px solid var(--color-border);
+          border-radius: var(--radius-xl);
+          overflow: hidden;
+          background: var(--color-surface);
+          display: flex;
+          flex-direction: column;
+          height: calc(100vh - 220px);
+          position: sticky;
+          top: 100px;
+          box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+        }
+        .preview-chrome-header {
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+          padding: 0.75rem 1rem;
+          background: var(--color-bg-tertiary);
+          border-bottom: 1px solid var(--color-border);
+        }
+        .chrome-dots { display: flex; gap: 6px; }
+        .chrome-dots .dot { width: 10px; height: 10px; border-radius: 50%; display: block; }
+        .dot.red { background: #ff5f57; }
+        .dot.yellow { background: #febc2e; }
+        .dot.green { background: #28c840; }
+        .chrome-url {
+          flex: 1; textAlign: center; font-size: 0.75rem;
+          color: var(--color-text-muted); background: var(--color-surface);
+          padding: 3px 12px; border-radius: 6px; font-weight: 500;
+        }
+        .preview-scroll-area {
+          flex: 1;
+          overflow-y: auto;
+          background: #000;
+        }
+
+        @media (max-width: 1024px) {
+          .editor-main-container.split { grid-template-columns: 1fr; }
+          .editor-live-preview-panel { height: 500px; position: static; }
+        }
         @media (max-width: 768px) {
           .editor-content { padding: 1rem; }
         }
@@ -207,6 +291,22 @@ function HeroEditor({ data, updatePortfolio, uploadImage }) {
           <input className="form-input" placeholder="Building the future, one line of code at a time" value={p.tagline || ''} onChange={e => updatePortfolio('tagline', e.target.value)} />
         </div>
         <div className="form-group">
+          <label className="form-label">Accent Color</label>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <input type="color" value={p.accent_color || '#6C63FF'} onChange={e => updatePortfolio('accent_color', e.target.value)} style={{ width: '40px', height: '40px', border: 'none', borderRadius: '8px', cursor: 'pointer' }} />
+            <div style={{ display: 'flex', gap: '6px' }}>
+              {PRESET_COLORS.map(c => (
+                <button
+                  key={c}
+                  type="button"
+                  onClick={() => updatePortfolio('accent_color', c)}
+                  style={{ width: '24px', height: '24px', borderRadius: '50%', background: c, border: p.accent_color === c ? '2px solid #fff' : 'none', cursor: 'pointer' }}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+        <div className="form-group">
           <label className="form-label">CTA Button Text</label>
           <input className="form-input" placeholder="View My Work" value={p.cta_text || ''} onChange={e => updatePortfolio('cta_text', e.target.value)} />
         </div>
@@ -218,7 +318,7 @@ function HeroEditor({ data, updatePortfolio, uploadImage }) {
           <label className="form-label">Profile Photo</label>
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
             {p.profile_image && (
-              <div className="avatar avatar-lg">
+              <div className="avatar avatar-lg" style={{ width: '64px', height: '64px', borderRadius: '50%', overflow: 'hidden' }}>
                 <img src={p.profile_image} alt="Profile" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
               </div>
             )}
@@ -316,7 +416,7 @@ function SkillsEditor({ data, setData }) {
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
         {data.skills?.map((skill, i) => (
-          <div key={skill.id || i} className="item-row">
+          <div key={skill.id || i} className="item-row" style={{ display: 'flex', gap: '0.5rem' }}>
             <input className="form-input" placeholder="Skill name" value={skill.name} onChange={e => updateSkill(i, 'name', e.target.value)} style={{ flex: 2 }} />
             <select className="form-input" value={skill.category} onChange={e => updateSkill(i, 'category', e.target.value)} style={{ flex: 1 }}>
               {SKILL_CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
