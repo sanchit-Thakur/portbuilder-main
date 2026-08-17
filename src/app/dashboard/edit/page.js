@@ -94,6 +94,18 @@ export default function EditPortfolio() {
     );
   }
 
+  if (!data || !data.portfolio || data.error) {
+    return (
+      <div style={{ padding: '3rem', textAlign: 'center', maxWidth: '500px', margin: '4rem auto' }}>
+        <h2 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: '1rem' }}>Portfolio Not Found</h2>
+        <p style={{ color: 'var(--color-text-muted)', marginBottom: '1.5rem', lineHeight: 1.6 }}>
+          {data?.error || 'Please sign in to access your portfolio editor.'}
+        </p>
+        <a href="/auth/login" className="btn btn-primary">Sign In</a>
+      </div>
+    );
+  }
+
   return (
     <div className="editor">
       {/* Toast */}
@@ -335,7 +347,7 @@ function HeroEditor({ data, updatePortfolio, uploadImage }) {
 
 /* ── About Editor ───────────────────────────────────────── */
 function AboutEditor({ data, updatePortfolio, uploadImage }) {
-  const p = data.portfolio;
+  const p = data?.portfolio || {};
   const handleImageUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -720,7 +732,7 @@ function TestimonialsEditor({ data, setData }) {
 
 /* ── Contact Editor ─────────────────────────────────────── */
 function ContactEditor({ data, updatePortfolio }) {
-  const p = data.portfolio;
+  const p = data?.portfolio || {};
 
   return (
     <div className="editor-section">
