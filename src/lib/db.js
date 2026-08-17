@@ -14,11 +14,27 @@ export async function getEngine() {
   if (hasMysqlConfig) {
     try {
       const mysql = await import('mysql2/promise');
+      const dbName = process.env.MYSQL_DATABASE || 'portfolio_builder';
+
+      // Bootstrap: Create database if it doesn't exist yet before creating pool
+      try {
+        const bootstrapConnection = await mysql.createConnection({
+          host: process.env.MYSQL_HOST,
+          user: process.env.MYSQL_USER,
+          password: process.env.MYSQL_PASSWORD || '',
+          port: parseInt(process.env.MYSQL_PORT || '3306'),
+        });
+        await bootstrapConnection.execute(`CREATE DATABASE IF NOT EXISTS \`${dbName}\``);
+        await bootstrapConnection.end();
+      } catch (bootstrapErr) {
+        console.warn('⚠️ MySQL bootstrap warning:', bootstrapErr.message);
+      }
+
       mysqlPool = mysql.createPool({
         host: process.env.MYSQL_HOST,
         user: process.env.MYSQL_USER,
         password: process.env.MYSQL_PASSWORD || '',
-        database: process.env.MYSQL_DATABASE || 'portfolio_builder',
+        database: dbName,
         port: parseInt(process.env.MYSQL_PORT || '3306'),
         waitForConnections: true,
         connectionLimit: 10,
