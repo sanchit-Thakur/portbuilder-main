@@ -48,7 +48,11 @@ export default function LoginPage() {
         <p className="text-muted" style={{ marginTop: '0.5rem' }}>Sign in to your portfolio dashboard</p>
 
         {error && (
-          <div className="auth-error">{error}</div>
+          <div className="auth-error">
+            {error === 'Invalid credentials'
+              ? 'Invalid credentials. If you have not registered yet, click "Create one free" below to sign up.'
+              : error}
+          </div>
         )}
 
         <form onSubmit={handleSubmit} className="auth-form">

@@ -19,35 +19,35 @@ export default function FeedbackDashboard() {
     return adminEmails.includes(u.email) || adminUsernames.includes(u.username);
   };
 
-  const fetchUserAndFeedback = async () => {
-    try {
-      // 1. Fetch current logged-in user profile
-      const userRes = await fetch('/api/portfolio');
-      if (userRes.ok) {
-        const userData = await userRes.json();
-        setUser(userData.user);
+  useEffect(() => {
+    const fetchUserAndFeedback = async () => {
+      try {
+        // 1. Fetch current logged-in user profile
+        const userRes = await fetch('/api/portfolio');
+        if (userRes.ok) {
+          const userData = await userRes.json();
+          setUser(userData.user);
 
-        // If the user is admin, fetch feedbacks
-        if (isAdmin(userData.user)) {
-          const url = new URL('/api/feedback', window.location.origin);
-          if (filterCategory !== 'All') url.searchParams.set('category', filterCategory);
-          if (filterRating !== 'All') url.searchParams.set('rating', filterRating);
-          
-          const res = await fetch(url);
-          if (res.ok) {
-            const data = await res.json();
-            setFeedbacks(data);
+          // If the user is admin, fetch feedbacks
+          if (isAdmin(userData.user)) {
+            const url = new URL('/api/feedback', window.location.origin);
+            if (filterCategory !== 'All') url.searchParams.set('category', filterCategory);
+            if (filterRating !== 'All') url.searchParams.set('rating', filterRating);
+            
+            const res = await fetch(url);
+            if (res.ok) {
+              const data = await res.json();
+              setFeedbacks(data);
+            }
           }
         }
+      } catch (err) {
+        console.error('Error fetching feedbacks:', err);
+      } finally {
+        setLoading(false);
       }
-    } catch (err) {
-      console.error('Error fetching feedbacks:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
+    };
 
-  useEffect(() => {
     fetchUserAndFeedback();
   }, [filterCategory, filterRating]);
 
