@@ -7,19 +7,23 @@ import { DEFAULT_SECTIONS_ORDER } from '@/lib/constants';
 export async function POST(request) {
   try {
     await ensureDbInitialized();
-    const { email, password, username, fullName } = await request.json();
+    let finalUsername = username ? username.trim() : '';
+    if (!finalUsername && email) {
+      const emailPrefix = email.split('@')[0].toLowerCase().replace(/[^a-z0-9_-]/g, '');
+      finalUsername = emailPrefix.length >= 3 ? emailPrefix : `${emailPrefix}${Math.floor(100 + Math.random() * 900)}`;
+    }
 
     // Validation
-    if (!email || !password || !username) {
+    if (!email || !password) {
       return NextResponse.json(
-        { error: 'Email, password, and username are required' },
+        { error: 'Email and password are required' },
         { status: 400 }
       );
     }
     if (!validateEmail(email)) {
       return NextResponse.json({ error: 'Invalid email format' }, { status: 400 });
     }
-    if (!validateUsername(username)) {
+    if (!validateUsername(finalUsername)) {
       return NextResponse.json(
         { error: 'Username must be 3-30 characters, letters, numbers, hyphens, underscores only' },
         { status: 400 }
@@ -37,7 +41,7 @@ export async function POST(request) {
     if (existingEmail) {
       return NextResponse.json({ error: 'Email already registered' }, { status: 409 });
     }
-    const existingUsername = await queryOne('SELECT id FROM users WHERE username = ?', [username]);
+    const existingUsername = await queryOne('SELECT id FROM users WHERE username = ?', [finalUsername]);
     if (existingUsername) {
       return NextResponse.json({ error: 'Username already taken' }, { status: 409 });
     }
@@ -47,21 +51,21 @@ export async function POST(request) {
     const passwordHash = await hashPassword(password);
     await query(
       'INSERT INTO users (id, email, password_hash, username, full_name) VALUES (?, ?, ?, ?, ?)',
-      [userId, email, passwordHash, username, fullName || '']
+      [userId, email, passwordHash, finalUsername, fullName || '']
     );
 
     // Create default portfolio
     const portfolioId = generateId();
     await query(
       `INSERT INTO portfolios (id, user_id, hero_title, sections_order) VALUES (?, ?, ?, ?)`,
-      [portfolioId, userId, fullName || username, JSON.stringify(DEFAULT_SECTIONS_ORDER)]
+      [portfolioId, userId, fullName || finalUsername, JSON.stringify(DEFAULT_SECTIONS_ORDER)]
     );
 
     // Set auth cookie
-    await setAuthCookie(userId, email, username);
+    await setAuthCookie(userId, email, finalUsername);
 
     return NextResponse.json(
-      { message: 'Account created successfully', user: { id: userId, email, username } },
+      { message: 'Account created successfully', user: { id: userId, email, username: finalUsername } },
       { status: 201 }
     );
   } catch (error) {

@@ -5,16 +5,16 @@ import { verifyPassword, setAuthCookie } from '@/lib/auth';
 export async function POST(request) {
   try {
     await ensureDbInitialized();
-    const { email, password } = await request.json();
-
-    if (!email || !password) {
+    const { email, password, identifier: rawIdentifier } = await request.json();
+    const identifier = email || rawIdentifier;
+    if (!identifier || !password) {
       return NextResponse.json(
         { error: 'Email and password are required' },
         { status: 400 }
       );
     }
 
-    const user = await queryOne('SELECT * FROM users WHERE email = ?', [email]);
+    const user = await queryOne('SELECT * FROM users WHERE email = ? OR username = ?', [identifier, identifier]);
     if (!user) {
       return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
     }
