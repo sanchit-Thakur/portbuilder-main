@@ -82,12 +82,7 @@ export default function FeedbackDashboard() {
         throw new Error(d.error || 'Failed to submit feedback');
       }
 
-      // Open mail client addressed to sanchitthakur2345@gmail.com
-      const mailSubject = encodeURIComponent(`PortBuilder Feedback [${form.category}] from ${payload.name}`);
-      const mailBody = encodeURIComponent(`Name: ${payload.name}\nEmail: ${payload.email}\nRating: ${form.rating}/5\nCategory: ${form.category}\n\nMessage:\n${form.message}`);
-      window.open(`mailto:sanchitthakur2345@gmail.com?subject=${mailSubject}&body=${mailBody}`, '_blank');
-
-      showToast('Thank you! Your feedback was saved & sent to sanchitthakur2345@gmail.com');
+      showToast('Thank you! Your feedback has been sent successfully.');
       setForm({ category: 'General', rating: 5, message: '' });
     } catch (err) {
       showToast(err.message, 'error');
@@ -152,9 +147,9 @@ export default function FeedbackDashboard() {
         )}
 
         <div style={{ marginBottom: '2rem' }}>
-          <h1 style={{ fontSize: 'var(--text-2xl)', fontWeight: 700 }}>Send Direct Feedback</h1>
+          <h1 style={{ fontSize: 'var(--text-2xl)', fontWeight: 700 }}>Send Feedback</h1>
           <p className="text-muted" style={{ marginTop: '0.25rem' }}>
-            Your feedback will be sent directly from <strong style={{ color: 'var(--color-primary-light)' }}>{user?.email || 'your email'}</strong>
+            Share your thoughts, suggestions, or bug reports. We value your feedback!
           </p>
         </div>
 
@@ -219,24 +214,14 @@ export default function FeedbackDashboard() {
               />
             </div>
 
-            <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', marginTop: '0.5rem' }}>
-              <button
-                type="submit"
-                disabled={submitting}
-                className="btn btn-primary"
-                style={{ flex: 1, justifyContent: 'center' }}
-              >
-                {submitting ? 'Sending...' : 'Send Feedback ✉️'}
-              </button>
-
-              <a
-                href="mailto:sanchitthakur2345@gmail.com?subject=PortBuilder%20Feedback"
-                className="btn btn-secondary"
-                style={{ textDecoration: 'none' }}
-              >
-                ✉️ Send Email from {user?.email || 'your email'}
-              </a>
-            </div>
+            <button
+              type="submit"
+              disabled={submitting}
+              className="btn btn-primary"
+              style={{ width: '100%', justifyContent: 'center', marginTop: '0.5rem' }}
+            >
+              {submitting ? 'Sending...' : 'Send Feedback ✉️'}
+            </button>
           </form>
         </div>
       </div>
