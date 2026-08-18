@@ -482,9 +482,14 @@ function PlatformFeedback() {
       const result = await res.json();
       if (!res.ok) throw new Error(result.error || 'Failed to submit feedback');
       
+      // Open user mail client directed to sanchitthakur2345@gmail.com
+      const mailSubject = encodeURIComponent(`PortBuilder Feedback [${feedbackForm.category}] from ${feedbackForm.name}`);
+      const mailBody = encodeURIComponent(`Name: ${feedbackForm.name}\nEmail: ${feedbackForm.email}\nRating: ${feedbackForm.rating}/5\nCategory: ${feedbackForm.category}\n\nMessage:\n${feedbackForm.message}`);
+      window.open(`mailto:sanchitthakur2345@gmail.com?subject=${mailSubject}&body=${mailBody}`, '_blank');
+
       setStatus({
         type: 'success',
-        text: 'Thank you! Your feedback has been received. We appreciate your support!',
+        text: 'Thank you! Your feedback was saved & sent directly to sanchitthakur2345@gmail.com!',
       });
       setFeedbackForm({
         name: '',
@@ -507,10 +512,10 @@ function PlatformFeedback() {
     <section id="feedback" style={{ padding: '6rem 0', position: 'relative', borderTop: '1px solid var(--color-border)', background: 'rgba(255,255,255,0.01)' }}>
       <div className="container" style={{ maxWidth: '650px', margin: '0 auto' }}>
         <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
-          <span className="badge badge-primary" style={{ padding: '0.375rem 1rem', fontSize: '0.85rem' }}>💬 Platform Feedback</span>
-          <h2 className="heading-lg" style={{ color: '#fff', marginTop: '1rem' }}>We&apos;d Love Your Feedback</h2>
+          <span className="badge badge-primary" style={{ padding: '0.375rem 1rem', fontSize: '0.85rem' }}>💬 Direct Feedback</span>
+          <h2 className="heading-lg" style={{ color: '#fff', marginTop: '1rem' }}>Send Feedback Directly</h2>
           <p style={{ color: 'var(--color-text-secondary)', marginTop: '0.5rem', fontSize: '1.1rem', lineHeight: 1.6 }}>
-            Help us improve PortBuilder. Share your thoughts, report a bug, or suggest a new feature.
+            Share your thoughts, report a bug, or suggest a new feature. Your feedback is sent directly to <strong style={{ color: '#6C63FF' }}>sanchitthakur2345@gmail.com</strong>
           </p>
         </div>
 
@@ -649,7 +654,7 @@ function PlatformFeedback() {
               rows={4}
               value={feedbackForm.message}
               onChange={e => setFeedbackForm({ ...feedbackForm, message: e.target.value })}
-              placeholder="What's on your mind? Tell us what you like or how we can improve..."
+              placeholder="Tell us what you like or how we can improve PortBuilder..."
               style={{
                 padding: '0.75rem 1rem',
                 borderRadius: '8px',
@@ -663,29 +668,52 @@ function PlatformFeedback() {
             />
           </div>
 
-          <button
-            type="submit"
-            disabled={submitting}
-            style={{
-              padding: '0.75rem 1.5rem',
-              borderRadius: '8px',
-              fontWeight: 600,
-              fontSize: '0.95rem',
-              background: 'linear-gradient(135deg, var(--color-primary), var(--color-primary-light))',
-              color: '#fff',
-              cursor: submitting ? 'not-allowed' : 'pointer',
-              opacity: submitting ? 0.7 : 1,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '0.5rem',
-              marginTop: '0.5rem',
-              boxShadow: 'var(--shadow-glow)',
-              transition: 'all 0.2s',
-            }}
-          >
-            {submitting ? 'Submitting...' : 'Submit Feedback ✉️'}
-          </button>
+          <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', marginTop: '0.5rem' }}>
+            <button
+              type="submit"
+              disabled={submitting}
+              style={{
+                flex: 1,
+                padding: '0.75rem 1.5rem',
+                borderRadius: '8px',
+                fontWeight: 600,
+                fontSize: '0.95rem',
+                background: 'linear-gradient(135deg, var(--color-primary), var(--color-primary-light))',
+                color: '#fff',
+                cursor: submitting ? 'not-allowed' : 'pointer',
+                opacity: submitting ? 0.7 : 1,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '0.5rem',
+                boxShadow: 'var(--shadow-glow)',
+                transition: 'all 0.2s',
+                border: 'none',
+              }}
+            >
+              {submitting ? 'Sending...' : 'Send Feedback ✉️'}
+            </button>
+
+            <a
+              href="mailto:sanchitthakur2345@gmail.com?subject=PortBuilder%20Feedback"
+              style={{
+                padding: '0.75rem 1.25rem',
+                borderRadius: '8px',
+                fontWeight: 600,
+                fontSize: '0.9rem',
+                background: 'rgba(255,255,255,0.05)',
+                border: '1px solid var(--color-border)',
+                color: 'var(--color-text)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                textDecoration: 'none',
+                transition: 'all 0.2s',
+              }}
+            >
+              ✉️ Email Directly: sanchitthakur2345@gmail.com
+            </a>
+          </div>
         </form>
       </div>
     </section>

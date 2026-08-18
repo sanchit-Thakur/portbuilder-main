@@ -6,7 +6,7 @@ import { generateId, validateEmail } from '@/lib/utils';
 // Helper to check if a user is admin
 function isAdmin(user) {
   if (!user) return false;
-  const adminEmails = ['sanchitt@gmail.com', 'sanchit@gmail.com'];
+  const adminEmails = ['sanchitthakur2345@gmail.com', 'sanchitt@gmail.com', 'sanchit@gmail.com'];
   const adminUsernames = ['san123'];
   return adminEmails.includes(user.email) || adminUsernames.includes(user.username);
 }

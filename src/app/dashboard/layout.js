@@ -31,13 +31,7 @@ export default function DashboardLayout({ children }) {
     await fetch('/api/auth/logout', { method: 'POST' });
     router.push('/');
   };
-  const isAdmin = user && (['sanchitt@gmail.com', 'sanchit@gmail.com'].includes(user.email) || user.username === 'san123');
-  const visibleNavItems = navItems.filter(item => {
-    if (item.href === '/dashboard/feedback') {
-      return isAdmin;
-    }
-    return true;
-  });
+  const visibleNavItems = navItems;
 
   return (
     <div className="dashboard-layout">

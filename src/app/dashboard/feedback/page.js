@@ -14,7 +14,7 @@ export default function FeedbackDashboard() {
 
   const isAdmin = (u) => {
     if (!u) return false;
-    const adminEmails = ['sanchitt@gmail.com', 'sanchit@gmail.com'];
+    const adminEmails = ['sanchitthakur2345@gmail.com', 'sanchitt@gmail.com', 'sanchit@gmail.com'];
     const adminUsernames = ['san123'];
     return adminEmails.includes(u.email) || adminUsernames.includes(u.username);
   };
