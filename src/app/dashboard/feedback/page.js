@@ -154,7 +154,7 @@ export default function FeedbackDashboard() {
         <div style={{ marginBottom: '2rem' }}>
           <h1 style={{ fontSize: 'var(--text-2xl)', fontWeight: 700 }}>Send Direct Feedback</h1>
           <p className="text-muted" style={{ marginTop: '0.25rem' }}>
-            Your feedback will be sent directly to <strong style={{ color: 'var(--color-primary-light)' }}>sanchitthakur2345@gmail.com</strong>
+            Your feedback will be sent directly from <strong style={{ color: 'var(--color-primary-light)' }}>{user?.email || 'your email'}</strong>
           </p>
         </div>
 
@@ -234,7 +234,7 @@ export default function FeedbackDashboard() {
                 className="btn btn-secondary"
                 style={{ textDecoration: 'none' }}
               >
-                ✉️ Email Directly: sanchitthakur2345@gmail.com
+                ✉️ Send Email from {user?.email || 'your email'}
               </a>
             </div>
           </form>

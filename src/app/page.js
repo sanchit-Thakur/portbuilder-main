@@ -490,7 +490,7 @@ function PlatformFeedback() {
 
       setStatus({
         type: 'success',
-        text: 'Thank you! Your feedback was saved & sent directly to sanchitthakur2345@gmail.com!',
+        text: 'Thank you! Your feedback has been received. We appreciate your support!',
       });
       setFeedbackForm({
         name: '',
@@ -516,7 +516,7 @@ function PlatformFeedback() {
           <span className="badge badge-primary" style={{ padding: '0.375rem 1rem', fontSize: '0.85rem' }}>💬 Direct Feedback</span>
           <h2 className="heading-lg" style={{ color: '#fff', marginTop: '1rem' }}>Send Feedback Directly</h2>
           <p style={{ color: 'var(--color-text-secondary)', marginTop: '0.5rem', fontSize: '1.1rem', lineHeight: 1.6 }}>
-            Share your thoughts, report a bug, or suggest a new feature. Your feedback is sent directly to <strong style={{ color: '#6C63FF' }}>sanchitthakur2345@gmail.com</strong>
+            Share your thoughts, report a bug, or suggest a new feature. Your feedback will be sent directly from <strong style={{ color: '#6C63FF' }}>{feedbackForm.email || 'your email'}</strong>
           </p>
         </div>
 
@@ -712,7 +712,7 @@ function PlatformFeedback() {
                 transition: 'all 0.2s',
               }}
             >
-              ✉️ Email Directly: sanchitthakur2345@gmail.com
+              ✉️ Send Email from {feedbackForm.email || 'your email'}
             </a>
           </div>
         </form>
