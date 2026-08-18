@@ -22,9 +22,10 @@
 
 ## ✨ Key Features
 
+* **📄 Integrated Resume Builder:** Generate and preview an ATS-friendly, professional resume directly from your portfolio content. Print/save as PDF or download HTML with one click.
 * **⚡ Real-time Live Preview:** Watch changes update instantaneously as you edit content and styles.
 * **🎨 Modern Themes:** Switch effortlessly between curated dark, light, and gradient aesthetic templates.
-* **🧩 Modular Sections:** Add, remove, and reorder Hero, About, Skills, Projects, Experience, and Contact components.
+* **🧩 Modular Sections:** Add, remove, and reorder Hero, About, Skills, Projects, Experience, Education, and Contact components.
 * **📱 Fully Responsive:** Clean layout architecture optimized across mobile, tablet, and desktop screens.
 * **📦 Export & Deploy:** Download production-ready code or deploy directly to platforms like Vercel or GitHub Pages.
 
