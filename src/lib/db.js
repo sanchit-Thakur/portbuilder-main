@@ -1,108 +1,165 @@
 import fs from 'fs';
 import path from 'path';
 
-let mysqlPool = null;
-let sqliteDb = null;
-let dbEngine = null; // 'mysql' | 'sqlite'
+// Use globalThis to maintain database connections across Next.js HMR reloads
+const globalForDb = globalThis;
+
+if (!globalForDb._portbuilderDbState) {
+  globalForDb._portbuilderDbState = {
+    mysqlPool: null,
+    sqliteDb: null,
+    dbEngine: null,
+    getEnginePromise: null,
+    dbInitPromise: null,
+  };
+}
+
+const dbState = globalForDb._portbuilderDbState;
 
 export async function getEngine() {
-  if (dbEngine) return dbEngine;
+  if (dbState.dbEngine) return dbState.dbEngine;
 
-  // Dynamically load .env.local if MYSQL_HOST is not yet loaded into process.env
-  if (!process.env.MYSQL_HOST) {
-    try {
-      const envPath = path.join(process.cwd(), '.env.local');
-      if (fs.existsSync(envPath)) {
-        const content = fs.readFileSync(envPath, 'utf8');
-        content.split('\n').forEach(line => {
-          const match = line.match(/^\s*([\w_]+)\s*=\s*(.*)\s*$/);
-          if (match && !process.env[match[1]]) {
-            process.env[match[1]] = match[2].trim();
-          }
-        });
-      }
-    } catch {}
+  if (dbState.getEnginePromise) {
+    return dbState.getEnginePromise;
   }
 
-  // Check if MySQL connection environment variables are explicitly provided
-  const hasMysqlConfig = process.env.MYSQL_HOST && process.env.MYSQL_USER;
-
-  if (hasMysqlConfig) {
-    try {
-      const mysql = await import('mysql2/promise');
-      const dbName = process.env.MYSQL_DATABASE || 'portfolio_builder';
-
-      // Bootstrap: Create database if it doesn't exist yet before creating pool
+  dbState.getEnginePromise = (async () => {
+    // Dynamically load .env.local if MYSQL_HOST is not yet loaded into process.env
+    if (!process.env.MYSQL_HOST) {
       try {
-        const bootstrapConnection = await mysql.createConnection({
+        const envPath = path.join(process.cwd(), '.env.local');
+        if (fs.existsSync(envPath)) {
+          const content = fs.readFileSync(envPath, 'utf8');
+          content.split('\n').forEach(line => {
+            const match = line.match(/^\s*([\w_]+)\s*=\s*(.*)\s*$/);
+            if (match && !process.env[match[1]]) {
+              process.env[match[1]] = match[2].trim();
+            }
+          });
+        }
+      } catch {}
+    }
+
+    // Check if MySQL connection environment variables are explicitly provided
+    const hasMysqlConfig = process.env.MYSQL_HOST && process.env.MYSQL_USER;
+
+    if (hasMysqlConfig) {
+      try {
+        const mysql = await import('mysql2/promise');
+        const dbName = process.env.MYSQL_DATABASE || 'portfolio_builder';
+
+        // Bootstrap: Create database if it doesn't exist yet before creating pool
+        try {
+          const bootstrapConnection = await mysql.createConnection({
+            host: process.env.MYSQL_HOST,
+            user: process.env.MYSQL_USER,
+            password: process.env.MYSQL_PASSWORD || '',
+            port: parseInt(process.env.MYSQL_PORT || '3306'),
+            connectTimeout: 3000,
+          });
+          await bootstrapConnection.execute(`CREATE DATABASE IF NOT EXISTS \`${dbName}\``);
+          await bootstrapConnection.end();
+        } catch (bootstrapErr) {
+          console.warn('⚠️ MySQL bootstrap warning:', bootstrapErr.message);
+        }
+
+        dbState.mysqlPool = mysql.createPool({
           host: process.env.MYSQL_HOST,
           user: process.env.MYSQL_USER,
           password: process.env.MYSQL_PASSWORD || '',
+          database: dbName,
           port: parseInt(process.env.MYSQL_PORT || '3306'),
+          waitForConnections: true,
+          connectionLimit: 10,
+          queueLimit: 0,
+          connectTimeout: 3000,
         });
-        await bootstrapConnection.execute(`CREATE DATABASE IF NOT EXISTS \`${dbName}\``);
-        await bootstrapConnection.end();
-      } catch (bootstrapErr) {
-        console.warn('⚠️ MySQL bootstrap warning:', bootstrapErr.message);
-      }
 
-      mysqlPool = mysql.createPool({
-        host: process.env.MYSQL_HOST,
-        user: process.env.MYSQL_USER,
-        password: process.env.MYSQL_PASSWORD || '',
-        database: dbName,
-        port: parseInt(process.env.MYSQL_PORT || '3306'),
-        waitForConnections: true,
-        connectionLimit: 10,
-        queueLimit: 0,
-      });
-
-      // Quick ping test
-      const conn = await mysqlPool.getConnection();
-      conn.release();
-      dbEngine = 'mysql';
-      console.log('✅ Using MySQL database engine');
-      return dbEngine;
-    } catch (err) {
-      console.warn('⚠️ MySQL connection failed, falling back to SQLite:', err.message);
-    }
-  }
-
-  // Fallback to SQLite (zero config, works everywhere)
-  try {
-    const Database = (await import('better-sqlite3')).default;
-    
-    // Choose writable directory for SQLite file
-    let dbDir = path.join(process.cwd(), 'data');
-    if (!fs.existsSync(dbDir)) {
-      try {
-        fs.mkdirSync(dbDir, { recursive: true });
-      } catch {
-        dbDir = '/tmp';
+        // Quick ping test
+        const conn = await dbState.mysqlPool.getConnection();
+        conn.release();
+        dbState.dbEngine = 'mysql';
+        console.log('✅ Using MySQL database engine');
+        return dbState.dbEngine;
+      } catch (err) {
+        console.warn('⚠️ MySQL connection failed, falling back to SQLite:', err.message);
+        if (dbState.mysqlPool) {
+          try { await dbState.mysqlPool.end(); } catch {}
+          dbState.mysqlPool = null;
+        }
       }
     }
-    const dbPath = path.join(dbDir, 'portbuilder.db');
-    sqliteDb = new Database(dbPath, { readonly: false });
+
+    // Fallback to SQLite (zero config, works everywhere)
+    if (dbState.sqliteDb) {
+      dbState.dbEngine = 'sqlite';
+      return dbState.dbEngine;
+    }
+
     try {
-      sqliteDb.pragma('journal_mode = WAL');
-    } catch {
-      sqliteDb.pragma('journal_mode = DELETE');
+      const Database = (await import('better-sqlite3')).default;
+      
+      // Determine writable directory for SQLite file
+      let dbDir = path.join(process.cwd(), 'data');
+      let isWritable = false;
+      try {
+        if (!fs.existsSync(dbDir)) {
+          fs.mkdirSync(dbDir, { recursive: true });
+        }
+        const testFile = path.join(dbDir, `.perm_test_${Date.now()}`);
+        fs.writeFileSync(testFile, '1');
+        fs.unlinkSync(testFile);
+        isWritable = true;
+      } catch {
+        isWritable = false;
+      }
+
+      if (!isWritable) {
+        dbDir = '/tmp';
+        try {
+          if (!fs.existsSync(dbDir)) {
+            fs.mkdirSync(dbDir, { recursive: true });
+          }
+        } catch {}
+      }
+
+      const dbPath = path.join(dbDir, 'portbuilder.db');
+
+      try {
+        dbState.sqliteDb = new Database(dbPath, { readonly: false, timeout: 5000 });
+        try {
+          dbState.sqliteDb.pragma('journal_mode = WAL');
+        } catch {
+          dbState.sqliteDb.pragma('journal_mode = DELETE');
+        }
+      } catch (sqliteOpenErr) {
+        console.warn(`⚠️ Primary SQLite path (${dbPath}) failed to open (${sqliteOpenErr.message}), trying fallback /tmp path...`);
+        const fallbackDbPath = path.join('/tmp', 'portbuilder.db');
+        dbState.sqliteDb = new Database(fallbackDbPath, { readonly: false, timeout: 5000 });
+        dbState.sqliteDb.pragma('journal_mode = DELETE');
+      }
+
+      dbState.sqliteDb.pragma('foreign_keys = ON');
+      dbState.dbEngine = 'sqlite';
+      console.log(`✅ Using SQLite database engine (${dbState.sqliteDb.name || dbPath})`);
+      return dbState.dbEngine;
+    } catch (err) {
+      console.error('❌ Failed to initialize SQLite engine:', err);
+      throw err;
     }
-    sqliteDb.pragma('foreign_keys = ON');
-    dbEngine = 'sqlite';
-    console.log(`✅ Using SQLite database engine (${dbPath})`);
-    return dbEngine;
-  } catch (err) {
-    console.error('❌ Failed to initialize SQLite engine:', err);
+  })().catch((err) => {
+    dbState.getEnginePromise = null;
     throw err;
-  }
+  });
+
+  return dbState.getEnginePromise;
 }
 
 export async function query(sql, params = []) {
   const engine = await getEngine();
   
   if (engine === 'mysql') {
-    const [rows] = await mysqlPool.execute(sql, params);
+    const [rows] = await dbState.mysqlPool.execute(sql, params);
     return rows;
   } else {
     // SQLite query execution
@@ -112,10 +169,10 @@ export async function query(sql, params = []) {
     const isSelect = /^SELECT/i.test(trimmedSql);
     
     if (isSelect) {
-      const stmt = sqliteDb.prepare(sql);
+      const stmt = dbState.sqliteDb.prepare(sql);
       return stmt.all(...sanitizedParams);
     } else {
-      const stmt = sqliteDb.prepare(sql);
+      const stmt = dbState.sqliteDb.prepare(sql);
       const res = stmt.run(...sanitizedParams);
       return res;
     }
@@ -147,7 +204,7 @@ export async function initDatabase() {
       await bootstrapConnection.end();
     } catch {}
 
-    const connection = await mysqlPool.getConnection();
+    const connection = await dbState.mysqlPool.getConnection();
     try {
       await connection.execute(`
         CREATE TABLE IF NOT EXISTS users (
@@ -301,7 +358,7 @@ export async function initDatabase() {
     }
   } else {
     // SQLite Tables Creation
-    sqliteDb.exec(`
+    dbState.sqliteDb.exec(`
       CREATE TABLE IF NOT EXISTS users (
         id TEXT PRIMARY KEY,
         email TEXT UNIQUE NOT NULL,
@@ -433,13 +490,12 @@ export async function initDatabase() {
   }
 }
 
-let dbInitPromise = null;
 export function ensureDbInitialized() {
-  if (!dbInitPromise) {
-    dbInitPromise = initDatabase().catch((err) => {
-      dbInitPromise = null;
+  if (!dbState.dbInitPromise) {
+    dbState.dbInitPromise = initDatabase().catch((err) => {
+      dbState.dbInitPromise = null;
       throw err;
     });
   }
-  return dbInitPromise;
+  return dbState.dbInitPromise;
 }
