@@ -3,7 +3,92 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 
-const SAMPLE_RESUME_CODE = `<!DOCTYPE html>
+const SAMPLE_LATEX_CODE = `\\documentclass[10pt,letterpaper]{article}
+\\usepackage[utf8]{inputenc}
+\\usepackage[margin=0.5in]{geometry}
+\\usepackage{hyperref}
+\\usepackage{enumitem}
+\\usepackage{titlesec}
+\\usepackage{xcolor}
+
+\\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=blue,
+}
+
+% Style section titles
+\\titleformat{\\section}{\\large\\bfseries\\uppercase}{}{0em}{}[\\titlerule]
+\\titlespacing*{\\section}{0pt}{8pt}{4pt}
+
+% Custom list styling
+\\setlist[itemize]{leftmargin=*, noitemsep, topsep=2pt}
+
+\\begin{document}
+\\pagenumbering{gobble} % Hide page numbers
+
+% Header
+\\begin{center}
+    {\\Huge \\textbf{Alex Rivera}} \\\\[4pt]
+    \\small alex.rivera@example.com \\ $|$ \\ +1 (555) 234-5678 \\ $|$ \\ \\href{https://linkedin.com}{LinkedIn} \\ $|$ \\ \\href{https://github.com}{GitHub} \\ $|$ \\ \\href{https://example.com}{Portfolio}
+\\end{center}
+
+% Profile summary
+\\section{Profile summary}
+Entry-Level \\textbf{Data Scientist \\& AI Engineer} with strong foundations in Machine Learning, Natural Language Processing (NLP), and full-stack AI system integration. Experienced in developing end-to-end data pipelines using \\textbf{Python}, vector databases, and modern Large Language Model (LLM) architectures. Demonstrated capabilities in predictive analytics, audio-to-text processing, and exploratory data analysis. Passionate about solving complex business problems through statistical modeling and quantitative analysis.
+
+% Education
+\\section{Education}
+\\begin{itemize}
+  \\item \\textbf{Bachelor of Technology in AI \\& Data Science} \\hfill 2024 -- 2028 \\\\
+  \\textit{Institute of Technology \\& Science} \\\\
+  CGPA: \\textbf{8.2}
+  \\item \\textbf{Senior Secondary Education (Class 12th)} \\hfill 2022 \\\\
+  Percentage: \\textbf{78.0\\%}
+  \\item \\textbf{Secondary School Education (Class 10th)} \\hfill 2020 \\\\
+  Percentage: \\textbf{82.5\\%}
+\\end{itemize}
+
+% Projects
+\\section{Projects}
+
+\\textbf{Type-To-Write: AI Knowledge Retrieval System} \\hfill \\href{https://github.com}{[GitHub]}
+\\begin{itemize}
+  \\item Built a RAG-based platform leveraging \\textbf{LangChain} and \\textbf{OpenAI GPT models} to convert educational video content into searchable notes.
+  \\item Integrated \\textbf{OpenAI Whisper} for audio transcription, achieving high accuracy in transcript generation across noisy inputs.
+  \\item Implemented \\textbf{Vector Embeddings} and semantic search indexing, reducing search query latency by \\textbf{40\\%}.
+  \\item \\textbf{Tech Stack:} Python, Whisper, Vector DB, LangChain, Next.js, FastAPI
+\\end{itemize}
+
+\\textbf{CineVerse: Movie Discovery \\& Recommendation Engine} \\hfill \\href{https://github.com}{[GitHub]}
+\\begin{itemize}
+  \\item Built an AI-driven movie recommendation engine using \\textbf{Content-Based Filtering}, \\textbf{TF-IDF Vectorization}, and \\textbf{Cosine Similarity} for personalized content matching.
+  \\item Performed \\textbf{NLP \\& Sentiment Analysis} on metadata and user reviews across \\textbf{5,000+ movie titles} to compute weighted sentiment scores and popularity metrics.
+  \\item Integrated \\textbf{TMDB API} endpoints with optimized data pipelines and client-side caching, improving recommendation retrieval speed by \\textbf{35\\%}.
+  \\item \\textbf{Tech Stack:} HTML5, CSS3, JavaScript, React.js, TMDB API
+\\end{itemize}
+
+\\textbf{Interactive Sales Analytics \\& Profitability Dashboard} \\hfill \\href{https://github.com}{[GitHub]}
+\\begin{itemize}
+  \\item Engineered an end-to-end Data Science dashboard to evaluate corporate sales streams and classify financial performance into \\textbf{profit vs. loss trajectories}.
+  \\item Built modular REST APIs using \\textbf{FastAPI} and \\textbf{Uvicorn} for real-time KPI calculations, transaction processing, live simulation engines, and automated CSV report generation.
+  \\item Implemented database architecture using \\textbf{MySQL} schema and \\textbf{SQLAlchemy ORM} models with zero-friction fallback to SQLite for rapid local testing.
+  \\item Designed multi-dimensional visual graphs (line, bar, doughnut charts) using \\textbf{Chart.js}, \\textbf{Plotly.js}, and \\textbf{Tailwind CSS}, optimizing inventory distribution by \\textbf{18\\%}.
+  \\item \\textbf{Tech Stack:} Python, FastAPI, Uvicorn, MySQL, SQLAlchemy, HTML5, Tailwind CSS, Chart.js, Plotly.js, Pandas, NumPy
+\\end{itemize}
+
+% Skills
+\\section{Skills}
+\\begin{itemize}
+  \\item \\textbf{Data Science \\& Machine Learning:} Data Cleaning, EDA, Feature Engineering, Statistical Analysis, Predictive Modeling, Scikit-learn, PyTorch, Pandas, NumPy, Matplotlib.
+  \\item \\textbf{AI \\& LLMs:} OpenAI API (GPT-4), Whisper, RAG Pipelines, Vector Embeddings, LangChain, Prompt Engineering.
+  \\item \\textbf{Programming Languages:} Python, SQL, C++, Java, C, HTML, CSS.
+\\end{itemize}
+
+\\end{document}`;
+
+const SAMPLE_HTML_CODE = `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -24,31 +109,16 @@ const SAMPLE_RESUME_CODE = `<!DOCTYPE html>
       margin: 0 auto;
     }
     
-    /* Header */
     .header { text-align: center; margin-bottom: 16px; }
     .header h1 { font-size: 24pt; font-weight: 700; color: #000000; margin-bottom: 6px; letter-spacing: -0.01em; }
     .contact-line { font-size: 9.5pt; color: #374151; }
     .contact-line a { color: #1d4ed8; text-decoration: none; }
-    .contact-line a:hover { text-decoration: underline; }
     .contact-sep { color: #9ca3af; margin: 0 6px; }
     
-    /* Section Headings */
-    h2.section-title {
-      font-size: 12pt;
-      font-weight: 700;
-      color: #000000;
-      margin-top: 16px;
-      margin-bottom: 4px;
-    }
-    .divider {
-      border: none;
-      border-top: 1px solid #111827;
-      margin-bottom: 10px;
-    }
+    h2.section-title { font-size: 12pt; font-weight: 700; color: #000000; margin-top: 16px; margin-bottom: 4px; }
+    .divider { border: none; border-top: 1px solid #111827; margin-bottom: 10px; }
     
-    /* Content Elements */
     p.summary { font-size: 10pt; text-align: justify; color: #1f2937; margin-bottom: 12px; line-height: 1.5; }
-    
     ul.item-list { padding-left: 18px; margin-bottom: 10px; }
     ul.item-list li { margin-bottom: 4px; font-size: 10pt; color: #1f2937; }
     
@@ -66,15 +136,10 @@ const SAMPLE_RESUME_CODE = `<!DOCTYPE html>
     .skills-list li { margin-bottom: 5px; font-size: 10pt; color: #1f2937; }
     .skill-cat { font-weight: 700; color: #000000; }
 
-    @media print {
-      body { padding: 0; max-width: 100%; }
-      .contact-line a { color: #000000; }
-    }
+    @media print { body { padding: 0; max-width: 100%; } .contact-line a { color: #000; } }
   </style>
 </head>
 <body>
-
-  <!-- Header -->
   <div class="header">
     <h1>Alex Rivera</h1>
     <div class="contact-line">
@@ -90,14 +155,12 @@ const SAMPLE_RESUME_CODE = `<!DOCTYPE html>
     </div>
   </div>
 
-  <!-- Profile summary -->
   <h2 class="section-title">Profile summary</h2>
   <div class="divider"></div>
   <p class="summary">
-    Entry-Level <strong>Data Scientist & AI Engineer</strong> with strong foundations in Machine Learning, Natural Language Processing (NLP), and full-stack AI system integration. Experienced in developing end-to-end data pipelines using <strong>Python</strong>, vector databases, and modern Large Language Model (LLM) architectures. Demonstrated capabilities in predictive analytics, audio-to-text processing, and exploratory data analysis. Passionate about solving complex business problems through statistical modeling and quantitative analysis.
+    Entry-Level <strong>Data Scientist & AI Engineer</strong> with strong foundations in Machine Learning, Natural Language Processing (NLP), and full-stack AI system integration. Experienced in developing end-to-end data pipelines using <strong>Python</strong>, vector databases, and modern Large Language Model (LLM) architectures.
   </p>
 
-  <!-- Education -->
   <h2 class="section-title">Education</h2>
   <div class="divider"></div>
   <ul class="item-list" style="list-style-type: disc;">
@@ -109,83 +172,131 @@ const SAMPLE_RESUME_CODE = `<!DOCTYPE html>
       <div class="item-sub">Institute of Technology & Science</div>
       <div>CGPA: <strong>8.2</strong></div>
     </li>
-    <li style="margin-top: 6px;">
-      <div class="item-header">
-        <span class="item-title">Senior Secondary Education (Class 12th)</span>
-        <span class="item-date">2022</span>
-      </div>
-      <div>Percentage: <strong>78.0%</strong></div>
-    </li>
-    <li style="margin-top: 6px;">
-      <div class="item-header">
-        <span class="item-title">Secondary School Education (Class 10th)</span>
-        <span class="item-date">2020</span>
-      </div>
-      <div>Percentage: <strong>82.5%</strong></div>
-    </li>
   </ul>
 
-  <!-- Projects -->
   <h2 class="section-title">Projects</h2>
   <div class="divider"></div>
-
   <div class="project-item">
     <div class="project-header">
       <span class="project-title">Type-To-Write: AI Knowledge Retrieval System</span>
       <a href="https://github.com" class="project-link">[GitHub]</a>
     </div>
     <ul class="item-list" style="list-style-type: disc;">
-      <li>Built a RAG-based platform leveraging <strong>LangChain</strong> and <strong>OpenAI GPT models</strong> to convert educational video content into searchable notes.</li>
-      <li>Integrated <strong>OpenAI Whisper</strong> for audio transcription, obtaining high accuracy in transcript generation across noisy inputs.</li>
-      <li>Implemented <strong>Vector Embeddings</strong> and semantic search indexing, reducing search query latency by <strong>40%</strong>.</li>
+      <li>Built a RAG-based platform leveraging <strong>LangChain</strong> and <strong>OpenAI GPT models</strong>.</li>
       <li><strong>Tech Stack:</strong> Python, Whisper, Vector DB, LangChain, Next.js, FastAPI</li>
     </ul>
   </div>
 
-  <div class="project-item">
-    <div class="project-header">
-      <span class="project-title">CineVerse: Movie Discovery & Recommendation Engine</span>
-      <a href="https://github.com" class="project-link">[GitHub]</a>
-    </div>
-    <ul class="item-list" style="list-style-type: disc;">
-      <li>Built an AI-driven movie recommendation engine using <strong>Content-Based Filtering</strong>, <strong>TF-IDF Vectorization</strong>, and <strong>Cosine Similarity</strong> for personalized content matching.</li>
-      <li>Performed <strong>NLP & Sentiment Analysis</strong> on metadata and user reviews across <strong>5,000+ movie titles</strong> to compute weighted sentiment scores and popularity metrics.</li>
-      <li>Integrated <strong>TMDB API</strong> endpoints with optimized data pipelines and client-side caching, improving recommendation retrieval speed by <strong>35%</strong>.</li>
-      <li><strong>Tech Stack:</strong> HTML5, CSS3, JavaScript, React.js, TMDB API</li>
-    </ul>
-  </div>
-
-  <div class="project-item">
-    <div class="project-header">
-      <span class="project-title">Interactive Sales Analytics & Profitability Dashboard</span>
-      <a href="https://github.com" class="project-link">[GitHub]</a>
-    </div>
-    <ul class="item-list" style="list-style-type: disc;">
-      <li>Engineered an end-to-end Data Science dashboard to evaluate corporate sales streams and classify financial performance into <strong>profit vs. loss trajectories</strong>.</li>
-      <li>Built modular REST APIs using <strong>FastAPI</strong> and <strong>Uvicorn</strong> for real-time KPI calculations, transaction processing, live simulation engines, and automated CSV report generation.</li>
-      <li>Implemented database architecture using <strong>MySQL</strong> schema and <strong>SQLAlchemy ORM</strong> models with zero-friction fallback to SQLite for rapid local testing.</li>
-      <li>Designed multi-dimensional visual graphs (line, bar, doughnut charts) using <strong>Chart.js</strong>, <strong>Plotly.js</strong>, and <strong>Tailwind CSS</strong>, optimizing inventory distribution by <strong>18%</strong>.</li>
-      <li><strong>Tech Stack:</strong> Python, FastAPI, Uvicorn, MySQL, SQLAlchemy, HTML5, Tailwind CSS, Chart.js, Plotly.js, Pandas, NumPy</li>
-    </ul>
-  </div>
-
-  <!-- Skills -->
   <h2 class="section-title">Skills</h2>
   <div class="divider"></div>
   <ul class="skills-list" style="list-style-type: disc;">
-    <li><span class="skill-cat">Data Science & Machine Learning:</span> Data Cleaning, EDA, Feature Engineering, Statistical Analysis, Predictive Modeling, Scikit-learn, PyTorch, Pandas, NumPy, Matplotlib.</li>
-    <li><span class="skill-cat">AI & LLMs:</span> OpenAI API (GPT-4), Whisper, RAG Pipelines, Vector Embeddings, LangChain, Prompt Engineering.</li>
-    <li><span class="skill-cat">Programming Languages:</span> Python, SQL, C++, Java, C, HTML, CSS.</li>
+    <li><span class="skill-cat">Data Science & Machine Learning:</span> PyTorch, Pandas, NumPy, Scikit-learn.</li>
+    <li><span class="skill-cat">Programming Languages:</span> Python, SQL, C++, Java, HTML, CSS.</li>
   </ul>
-
 </body>
 </html>`;
+
+// Engine to convert LaTeX code into formatted HTML for iframe live preview
+function renderLatexToHtml(latex) {
+  if (!latex) return '';
+
+  // If input is raw HTML document already, return as is
+  if (/^\s*<!DOCTYPE\s+html/i.test(latex) || /^\s*<html/i.test(latex)) {
+    return latex;
+  }
+
+  // 1. Remove comments
+  let text = latex.replace(/%[^\n]*/g, '');
+
+  // 2. Extract Document Body if \begin{document} is present
+  const docMatch = text.match(/\\begin\{document\}([\s\S]*?)\\end\{document\}/);
+  if (docMatch) {
+    text = docMatch[1];
+  }
+
+  // 3. Unescape LaTeX Special Characters
+  text = text
+    .replace(/\\\&/g, '&')
+    .replace(/\\_/g, '_')
+    .replace(/\\%/g, '%')
+    .replace(/\\\$[|\s]*\\\$|\\\$|\\\|/g, '<span style="color:#9ca3af; margin:0 6px;">|</span>');
+
+  // 4. Center Blocks \begin{center} ... \end{center}
+  text = text.replace(/\\begin\{center\}([\s\S]*?)\\end\{center\}/g, (m, inner) => {
+    return `<div style="text-align:center; margin-bottom:16px;">${inner}</div>`;
+  });
+
+  // 5. Clean LaTeX setup commands
+  text = text
+    .replace(/\\Huge/g, '')
+    .replace(/\\large/g, '')
+    .replace(/\\small/g, '')
+    .replace(/\\pagenumbering\{[^}]*\}/g, '')
+    .replace(/\\titleformat\{[^}]*\}\{[^}]*\}\{[^}]*\}\{[^}]*\}\[[^\]]*\]/g, '')
+    .replace(/\\titlespacing\*?\{[^}]*\}\{[^}]*\}\{[^}]*\}\{[^}]*\}/g, '')
+    .replace(/\\setlist\[[^\]]*\]\{[^}]*\}/g, '')
+    .replace(/\\hypersetup\{[\s\S]*?\}/g, '')
+    .replace(/\\documentclass\[[^\]]*\]\{[^}]*\}/g, '')
+    .replace(/\\usepackage(\[[^\]]*\])?\{[^}]*\}/g, '');
+
+  // 6. Section Titles \section{Title}
+  text = text.replace(/\\section\{([^}]+)\}/g, (m, title) => {
+    return `<h2 style="font-size:12pt; font-weight:700; text-transform:capitalize; margin-top:18px; margin-bottom:4px; color:#000000; font-family: Source Serif 4, Georgia, serif;">${title}</h2><hr style="border:none; border-top:1px solid #111827; margin-bottom:10px;" />`;
+  });
+
+  // 7. Bold and Italic formatting
+  text = text.replace(/\\textbf\{([^}]+)\}/g, '<strong>$1</strong>');
+  text = text.replace(/\\textit\{([^}]+)\}/g, '<em>$1</em>');
+
+  // 8. Href Links \href{url}{label}
+  text = text.replace(/\\href\{([^}]+)\}\{([^}]+)\}/g, '<a href="$1" style="color:#1d4ed8; text-decoration:none;" target="_blank">$2</a>');
+
+  // 9. \hfill alignment (e.g. Title \hfill Date \\)
+  text = text.replace(/([^\n\\]+)\\hfill\s+([^\n\\]+)(\\\\)?/g, (m, left, right) => {
+    const l = left.replace(/[{}]/g, '').trim();
+    const r = right.replace(/[{}]/g, '').trim();
+    return `<div style="display:flex; justify-content:space-between; align-items:baseline; font-size:10.5pt; margin-bottom:2px;"><span style="font-weight:600;">${l}</span><span style="font-size:10pt; color:#111827;">${r}</span></div>`;
+  });
+
+  // 10. Itemize lists & Items
+  text = text.replace(/\\begin\{itemize\}/g, `<ul style="padding-left:18px; margin-bottom:10px; list-style-type:disc;">`);
+  text = text.replace(/\\end\{itemize\}/g, `</ul>`);
+  
+  text = text.replace(/\\item\s+([\s\S]*?)(?=\\item|\\end\{itemize\}|<ul|<\/ul>|\\section|\n\n|$)/g, (m, content) => {
+    return `<li style="margin-bottom:4px; font-size:10pt; color:#1f2937;">${content.replace(/[{}]/g, '').trim()}</li>`;
+  });
+
+  // 11. Clean line breaks and stray braces
+  text = text.replace(/\\\\\s*\[[^\]]*\]|\\\\/g, '<br />');
+  text = text.replace(/[{}]/g, '');
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&display=swap");
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: "Source Serif 4", Georgia, "Times New Roman", serif;
+      color: #111827; background: #ffffff; line-height: 1.45; font-size: 10.5pt;
+      padding: 40px 45px; max-width: 800px; margin: 0 auto;
+    }
+    a { color: #1d4ed8; text-decoration: none; }
+    @media print { body { padding: 0; max-width: 100%; } }
+  </style>
+</head>
+<body>
+  ${text}
+</body>
+</html>`;
+}
 
 export default function ResumePage() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [mode, setMode] = useState('code'); // 'code' | 'auto'
-  const [customHtml, setCustomHtml] = useState(SAMPLE_RESUME_CODE);
+  const [lang, setLang] = useState('latex'); // 'latex' | 'html' | 'auto'
+  const [code, setCode] = useState(SAMPLE_LATEX_CODE);
   const [toast, setToast] = useState(null);
 
   useEffect(() => {
@@ -203,132 +314,67 @@ export default function ResumePage() {
     setTimeout(() => setToast(null), 3000);
   };
 
-  // Helper to generate auto resume code from DB portfolio data in classic ATS format
-  const generateAutoHtml = () => {
+  // Helper to generate auto resume LaTeX from DB portfolio data
+  const generateAutoLatex = () => {
     if (!data) return '';
     const { portfolio, skills = [], projects = [], experiences = [], education = [], user } = data;
     
-    return `<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>${user?.full_name || user?.username} - Resume</title>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&display=swap');
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: 'Source Serif 4', Georgia, 'Times New Roman', serif;
-      color: #111827; background: #ffffff; line-height: 1.45; font-size: 10.5pt;
-      padding: 40px 45px; max-width: 800px; margin: 0 auto;
-    }
-    .header { text-align: center; margin-bottom: 16px; }
-    .header h1 { font-size: 24pt; font-weight: 700; color: #000; margin-bottom: 6px; }
-    .contact-line { font-size: 9.5pt; color: #374151; }
-    .contact-line a { color: #1d4ed8; text-decoration: none; }
-    .contact-sep { color: #9ca3af; margin: 0 6px; }
-    h2.section-title { font-size: 12pt; font-weight: 700; color: #000; margin-top: 16px; margin-bottom: 4px; }
-    .divider { border: none; border-top: 1px solid #111827; margin-bottom: 10px; }
-    p.summary { font-size: 10pt; text-align: justify; color: #1f2937; margin-bottom: 12px; line-height: 1.5; }
-    ul.item-list { padding-left: 18px; margin-bottom: 10px; }
-    ul.item-list li { margin-bottom: 4px; font-size: 10pt; color: #1f2937; }
-    .item-header { display: flex; justify-content: space-between; align-items: baseline; font-size: 10.5pt; }
-    .item-title { font-weight: 700; color: #000; }
-    .item-date { font-weight: 400; font-size: 10pt; color: #111827; }
-    .item-sub { font-size: 10pt; color: #374151; font-weight: 600; margin-bottom: 2px; }
-    .project-item { margin-bottom: 12px; }
-    .project-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px; }
-    .project-title { font-weight: 700; font-size: 10.5pt; color: #000; }
-    .project-link { font-size: 9.5pt; color: #1d4ed8; text-decoration: none; }
-    .skills-list { padding-left: 18px; }
-    .skills-list li { margin-bottom: 5px; font-size: 10pt; color: #1f2937; }
-    .skill-cat { font-weight: 700; color: #000; }
-    @media print { body { padding: 0; max-width: 100%; } .contact-line a { color: #000; } }
-  </style>
-</head>
-<body>
-  <div class="header">
-    <h1>${user?.full_name || portfolio?.hero_title || user?.username}</h1>
-    <div class="contact-line">
-      ${user?.email ? `<a href="mailto:${user.email}">${user.email}</a>` : ''}
-      ${portfolio?.phone ? `<span class="contact-sep">|</span><span>${portfolio.phone}</span>` : ''}
-      ${portfolio?.linkedin ? `<span class="contact-sep">|</span><a href="${portfolio.linkedin}">LinkedIn</a>` : ''}
-      ${portfolio?.github ? `<span class="contact-sep">|</span><a href="${portfolio.github}">GitHub</a>` : ''}
-      ${portfolio?.website ? `<span class="contact-sep">|</span><a href="${portfolio.website}">Portfolio</a>` : ''}
-    </div>
-  </div>
+    return `\\documentclass[10pt,letterpaper]{article}
+\\usepackage[utf8]{inputenc}
+\\usepackage[margin=0.5in]{geometry}
+\\usepackage{hyperref}
+\\usepackage{enumitem}
 
-  ${(portfolio?.bio || portfolio?.about_text) ? `
-    <h2 class="section-title">Profile summary</h2>
-    <div class="divider"></div>
-    <p class="summary">${portfolio.bio || portfolio.about_text}</p>
-  ` : ''}
+\\begin{document}
+\\pagenumbering{gobble}
 
-  ${education.length > 0 ? `
-    <h2 class="section-title">Education</h2>
-    <div class="divider"></div>
-    <ul class="item-list" style="list-style-type: disc;">
-      ${education.map(ed => `
-        <li>
-          <div class="item-header">
-            <span class="item-title">${ed.degree}${ed.field ? ' in ' + ed.field : ''}</span>
-            <span class="item-date">${ed.start_date}${ed.end_date ? '–' + ed.end_date : ''}</span>
-          </div>
-          <div class="item-sub">${ed.institution}</div>
-          ${ed.description ? `<div>${ed.description}</div>` : ''}
-        </li>
-      `).join('')}
-    </ul>
-  ` : ''}
+\\begin{center}
+    {\\Huge \\textbf{${user?.full_name || portfolio?.hero_title || user?.username}}} \\\\[4pt]
+    \\small ${user?.email || ''} \\ $|$ \\ ${portfolio?.phone || ''} \\ $|$ \\ \\href{${portfolio?.linkedin || '#'}}{LinkedIn} \\ $|$ \\ \\href{${portfolio?.github || '#'}}{GitHub}
+\\end{center}
 
-  ${projects.length > 0 ? `
-    <h2 class="section-title">Projects</h2>
-    <div class="divider"></div>
-    ${projects.map(p => `
-      <div class="project-item">
-        <div class="project-header">
-          <span class="project-title">${p.title}</span>
-          ${p.github_url || p.live_url ? `<a href="${p.github_url || p.live_url}" class="project-link">[Link]</a>` : ''}
-        </div>
-        <ul class="item-list" style="list-style-type: disc;">
-          ${p.short_description || p.description ? `<li>${p.short_description || p.description}</li>` : ''}
-          ${Array.isArray(p.tech_stack) && p.tech_stack.length > 0 ? `<li><strong>Tech Stack:</strong> ${p.tech_stack.join(', ')}</li>` : ''}
-        </ul>
-      </div>
-    `).join('')}
-  ` : ''}
+${(portfolio?.bio || portfolio?.about_text) ? `\\section{Profile summary}
+${portfolio.bio || portfolio.about_text}` : ''}
 
-  ${experiences.length > 0 ? `
-    <h2 class="section-title">Work Experience</h2>
-    <div class="divider"></div>
-    ${experiences.map(ex => `
-      <div class="project-item">
-        <div class="project-header">
-          <span class="project-title">${ex.role} — ${ex.company}</span>
-          <span class="item-date">${ex.start_date}${ex.end_date ? '–' + ex.end_date : ex.is_current ? '–Present' : ''}</span>
-        </div>
-        <ul class="item-list" style="list-style-type: disc;">
-          ${ex.description ? `<li>${ex.description}</li>` : ''}
-        </ul>
-      </div>
-    `).join('')}
-  ` : ''}
+${education.length > 0 ? `\\section{Education}
+\\begin{itemize}
+${education.map(ed => `  \\item \\textbf{${ed.degree}${ed.field ? ' in ' + ed.field : ''}} \\hfill ${ed.start_date}${ed.end_date ? ' -- ' + ed.end_date : ''} \\\\
+  \\textit{${ed.institution}} ${ed.description ? '\\\\ ' + ed.description : ''}`).join('\n')}
+\\end{itemize}` : ''}
 
-  ${skills.length > 0 ? `
-    <h2 class="section-title">Skills</h2>
-    <div class="divider"></div>
-    <ul class="skills-list" style="list-style-type: disc;">
-      <li><span class="skill-cat">Technical Skills:</span> ${skills.map(s => s.name).join(', ')}</li>
-    </ul>
-  ` : ''}
-</body>
-</html>`;
+${projects.length > 0 ? `\\section{Projects}
+${projects.map(p => `\\textbf{${p.title}} \\hfill \\href{${p.github_url || p.live_url || '#'}}{[Link]}
+\\begin{itemize}
+  \\item ${p.short_description || p.description || ''}
+  ${Array.isArray(p.tech_stack) && p.tech_stack.length > 0 ? `\\item \\textbf{Tech Stack:} ${p.tech_stack.join(', ')}` : ''}
+\\end{itemize}`).join('\n')}` : ''}
+
+${experiences.length > 0 ? `\\section{Work Experience}
+${experiences.map(ex => `\\textbf{${ex.role} --- ${ex.company}} \\hfill ${ex.start_date}${ex.end_date ? ' -- ' + ex.end_date : ex.is_current ? ' -- Present' : ''}
+\\begin{itemize}
+  ${ex.description ? `\\item ${ex.description}` : ''}
+\\end{itemize}`).join('\n')}` : ''}
+
+${skills.length > 0 ? `\\section{Skills}
+\\begin{itemize}
+  \\item \\textbf{Technical Skills:} ${skills.map(s => s.name).join(', ')}
+\\end{itemize}` : ''}
+
+\\end{document}`;
   };
 
-  const activeHtml = mode === 'code' ? customHtml : generateAutoHtml();
+  // Compute active preview HTML string
+  const activePreviewHtml = lang === 'latex'
+    ? renderLatexToHtml(code)
+    : lang === 'html'
+    ? renderLatexToHtml(code)
+    : renderLatexToHtml(generateAutoLatex());
+
+  const activeRawCode = lang === 'auto' ? generateAutoLatex() : code;
 
   const handlePrint = () => {
     const printWindow = window.open('', '_blank');
-    printWindow.document.write(activeHtml);
+    printWindow.document.write(activePreviewHtml);
     printWindow.document.close();
     printWindow.focus();
     setTimeout(() => {
@@ -337,25 +383,40 @@ export default function ResumePage() {
   };
 
   const handleDownload = () => {
-    const blob = new Blob([activeHtml], { type: 'text/html;charset=utf-8' });
+    const ext = lang === 'latex' ? 'tex' : 'html';
+    const mime = lang === 'latex' ? 'text/x-tex;charset=utf-8' : 'text/html;charset=utf-8';
+    const blob = new Blob([activeRawCode], { type: mime });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = `${data?.user?.username || 'resume'}-ats-resume.html`;
+    link.download = `${data?.user?.username || 'resume'}-ats.${ext}`;
     link.click();
     URL.revokeObjectURL(url);
-    showToast('Resume HTML downloaded successfully!');
+    showToast(`Resume ${ext.toUpperCase()} file downloaded!`);
   };
 
   const handleCopyCode = () => {
-    navigator.clipboard.writeText(activeHtml);
+    navigator.clipboard.writeText(activeRawCode);
     showToast('Code copied to clipboard!');
   };
 
   const handleResetSample = () => {
-    if (confirm('Reset editor to standard sample ATS code template?')) {
-      setCustomHtml(SAMPLE_RESUME_CODE);
-      showToast('Reset code to sample template!');
+    if (confirm('Reset code editor to sample template?')) {
+      if (lang === 'latex') {
+        setCode(SAMPLE_LATEX_CODE);
+      } else {
+        setCode(SAMPLE_HTML_CODE);
+      }
+      showToast('Reset to sample template!');
+    }
+  };
+
+  const switchLanguage = (newLang) => {
+    setLang(newLang);
+    if (newLang === 'latex') {
+      setCode(SAMPLE_LATEX_CODE);
+    } else if (newLang === 'html') {
+      setCode(SAMPLE_HTML_CODE);
     }
   };
 
@@ -381,7 +442,7 @@ export default function ResumePage() {
         <div>
           <h1 style={{ fontSize: 'var(--text-2xl)', fontWeight: 700 }}>Resume Code Builder</h1>
           <p className="text-muted" style={{ marginTop: '0.25rem' }}>
-            Build, edit as code, and export a classic LaTeX-style ATS resume template
+            Write LaTeX or HTML code to generate a classic ATS resume with real-time compiled preview
           </p>
         </div>
 
@@ -391,7 +452,7 @@ export default function ResumePage() {
             🖨️ Print / Save PDF
           </button>
           <button onClick={handleDownload} className="btn btn-secondary">
-            📥 Download HTML
+            📥 Download {lang === 'latex' ? '.TEX' : '.HTML'}
           </button>
           <button onClick={handleCopyCode} className="btn btn-secondary">
             📋 Copy Code
@@ -399,45 +460,57 @@ export default function ResumePage() {
         </div>
       </div>
 
-      {/* Mode Switcher Tabs */}
+      {/* Language / Mode Switcher Tabs */}
       <div style={{
         display: 'flex', gap: '0.75rem', marginBottom: '1.5rem',
         background: 'var(--color-bg-secondary)', padding: '6px',
         borderRadius: 'var(--radius-lg)', border: '1px solid var(--color-border)',
-        maxWidth: '520px',
+        maxWidth: '600px',
       }}>
         <button
-          onClick={() => setMode('code')}
+          onClick={() => switchLanguage('latex')}
           style={{
             flex: 1, padding: '0.625rem 1rem', borderRadius: 'var(--radius-md)',
             fontWeight: 600, fontSize: '0.9rem', cursor: 'pointer', border: 'none',
-            background: mode === 'code' ? 'var(--color-primary)' : 'transparent',
-            color: mode === 'code' ? '#fff' : 'var(--color-text-muted)',
+            background: lang === 'latex' ? 'var(--color-primary)' : 'transparent',
+            color: lang === 'latex' ? '#fff' : 'var(--color-text-muted)',
             transition: 'all 0.2s',
           }}
         >
-          💻 Interactive Code Editor
+          📄 LaTeX Code (.tex)
         </button>
         <button
-          onClick={() => setMode('auto')}
+          onClick={() => switchLanguage('html')}
           style={{
             flex: 1, padding: '0.625rem 1rem', borderRadius: 'var(--radius-md)',
             fontWeight: 600, fontSize: '0.9rem', cursor: 'pointer', border: 'none',
-            background: mode === 'auto' ? 'var(--color-primary)' : 'transparent',
-            color: mode === 'auto' ? '#fff' : 'var(--color-text-muted)',
+            background: lang === 'html' ? 'var(--color-primary)' : 'transparent',
+            color: lang === 'html' ? '#fff' : 'var(--color-text-muted)',
             transition: 'all 0.2s',
           }}
         >
-          📊 Auto-Sync Portfolio Data
+          🌐 HTML / CSS (.html)
+        </button>
+        <button
+          onClick={() => switchLanguage('auto')}
+          style={{
+            flex: 1, padding: '0.625rem 1rem', borderRadius: 'var(--radius-md)',
+            fontWeight: 600, fontSize: '0.9rem', cursor: 'pointer', border: 'none',
+            background: lang === 'auto' ? 'var(--color-primary)' : 'transparent',
+            color: lang === 'auto' ? '#fff' : 'var(--color-text-muted)',
+            transition: 'all 0.2s',
+          }}
+        >
+          📊 Auto-Sync DB
         </button>
       </div>
 
-      {/* Mode 1: Code Editor & Live Preview Split View */}
-      {mode === 'code' && (
+      {/* Editor & Live Preview Split Container */}
+      {lang !== 'auto' ? (
         <div>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
             <span style={{ fontSize: '0.85rem', color: 'var(--color-text-secondary)', fontWeight: 600 }}>
-              💡 Edit the HTML/CSS code below or click &quot;Reset Sample Code&quot; to restore the template.
+              💡 Edit the {lang === 'latex' ? 'LaTeX (\\documentclass...)' : 'HTML/CSS'} code on the left — the preview compiles live on the right!
             </span>
             <button onClick={handleResetSample} className="btn btn-ghost" style={{ fontSize: '0.8rem', padding: '0.25rem 0.625rem' }}>
               🔄 Reset to Sample Code
@@ -460,13 +533,15 @@ export default function ResumePage() {
                 display: 'flex', justifyContent: 'space-between', alignItems: 'center',
               }}>
                 <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8rem', color: '#8b949e', fontWeight: 600 }}>
-                  📄 resume-template.html
+                  {lang === 'latex' ? '📄 resume-template.tex' : '📄 resume-template.html'}
                 </span>
-                <span style={{ fontSize: '0.75rem', color: '#58a6ff' }}>HTML / CSS</span>
+                <span style={{ fontSize: '0.75rem', color: '#58a6ff', fontWeight: 600 }}>
+                  {lang === 'latex' ? 'LaTeX Code' : 'HTML / CSS'}
+                </span>
               </div>
               <textarea
-                value={customHtml}
-                onChange={e => setCustomHtml(e.target.value)}
+                value={code}
+                onChange={e => setCode(e.target.value)}
                 style={{
                   flex: 1, width: '100%', padding: '1.25rem', background: 'transparent',
                   color: '#e6edf3', fontFamily: 'var(--font-mono), monospace',
@@ -477,7 +552,7 @@ export default function ResumePage() {
               />
             </div>
 
-            {/* Right: Live Preview Pane */}
+            {/* Right: Compiled Live Resume Preview */}
             <div style={{
               background: '#ffffff', border: '1px solid var(--color-border)',
               borderRadius: 'var(--radius-xl)', overflow: 'hidden',
@@ -490,22 +565,22 @@ export default function ResumePage() {
                 display: 'flex', justifyContent: 'space-between', alignItems: 'center',
               }}>
                 <span style={{ fontSize: '0.8rem', fontWeight: 700, color: '#334155' }}>
-                  👁️ Live Resume Preview
+                  👁️ Compiled Live Resume Preview
                 </span>
-                <span style={{ fontSize: '0.75rem', color: '#64748b' }}>ATS Classic Serif Layout</span>
+                <span style={{ fontSize: '0.75rem', color: '#10b981', fontWeight: 600 }}>
+                  ✓ LaTeX / ATS Render Engine Active
+                </span>
               </div>
               <iframe
-                srcDoc={customHtml}
-                title="Resume Preview"
+                srcDoc={activePreviewHtml}
+                title="Live Resume Preview"
                 style={{ width: '100%', height: '100%', border: 'none', background: '#fff' }}
               />
             </div>
           </div>
         </div>
-      )}
-
-      {/* Mode 2: Auto-Generated Portfolio Data Resume */}
-      {mode === 'auto' && (
+      ) : (
+        /* Auto-Sync Mode */
         <div style={{
           background: '#ffffff', borderRadius: 'var(--radius-xl)',
           overflow: 'hidden', border: '1px solid var(--color-border)',
@@ -514,17 +589,17 @@ export default function ResumePage() {
           <div style={{
             padding: '0.875rem 1.5rem', background: '#f8fafc',
             borderBottom: '1px solid #e2e8f0', display: 'flex',
-            justify: 'space-between', alignItems: 'center',
+            justifyContent: 'space-between', alignItems: 'center',
           }}>
             <span style={{ fontSize: '0.85rem', fontWeight: 700, color: '#334155' }}>
-              📊 Auto-Generated ATS Resume Preview
+              📊 Auto-Generated ATS LaTeX Resume Preview
             </span>
             <Link href="/dashboard/edit" style={{ fontSize: '0.8rem', color: '#6C63FF', fontWeight: 600 }}>
               ✏️ Edit Portfolio Data ↗
             </Link>
           </div>
           <iframe
-            srcDoc={generateAutoHtml()}
+            srcDoc={activePreviewHtml}
             title="Auto Resume Preview"
             style={{ width: '100%', height: '700px', border: 'none', background: '#fff' }}
           />
