@@ -12,6 +12,11 @@ export default function FeedbackDashboard() {
   const [filterRating, setFilterRating] = useState('All');
   const [toast, setToast] = useState(null);
 
+  // Non-admin submission form state
+  const [form, setForm] = useState({ category: 'General', rating: 5, message: '' });
+  const [submitting, setSubmitting] = useState(false);
+  const [hoveredStar, setHoveredStar] = useState(0);
+
   const isAdmin = (u) => {
     if (!u) return false;
     const adminEmails = ['sanchitthakur2345@gmail.com', 'sanchitt@gmail.com', 'sanchit@gmail.com'];
@@ -22,13 +27,11 @@ export default function FeedbackDashboard() {
   useEffect(() => {
     const fetchUserAndFeedback = async () => {
       try {
-        // 1. Fetch current logged-in user profile
         const userRes = await fetch('/api/portfolio');
         if (userRes.ok) {
           const userData = await userRes.json();
           setUser(userData.user);
 
-          // If the user is admin, fetch feedbacks
           if (isAdmin(userData.user)) {
             const url = new URL('/api/feedback', window.location.origin);
             if (filterCategory !== 'All') url.searchParams.set('category', filterCategory);
@@ -56,6 +59,43 @@ export default function FeedbackDashboard() {
     setTimeout(() => setToast(null), 3000);
   };
 
+  const handleUserSubmit = async (e) => {
+    e.preventDefault();
+    setSubmitting(true);
+    try {
+      const payload = {
+        name: user?.full_name || user?.username || 'User',
+        email: user?.email || '',
+        category: form.category,
+        rating: form.rating,
+        message: form.message,
+      };
+
+      const res = await fetch('/api/feedback', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+
+      if (!res.ok) {
+        const d = await res.json();
+        throw new Error(d.error || 'Failed to submit feedback');
+      }
+
+      // Open mail client addressed to sanchitthakur2345@gmail.com
+      const mailSubject = encodeURIComponent(`PortBuilder Feedback [${form.category}] from ${payload.name}`);
+      const mailBody = encodeURIComponent(`Name: ${payload.name}\nEmail: ${payload.email}\nRating: ${form.rating}/5\nCategory: ${form.category}\n\nMessage:\n${form.message}`);
+      window.open(`mailto:sanchitthakur2345@gmail.com?subject=${mailSubject}&body=${mailBody}`, '_blank');
+
+      showToast('Thank you! Your feedback was saved & sent to sanchitthakur2345@gmail.com');
+      setForm({ category: 'General', rating: 5, message: '' });
+    } catch (err) {
+      showToast(err.message, 'error');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   const handleDelete = async (id) => {
     if (!confirm('Are you sure you want to delete this feedback?')) return;
     
@@ -75,7 +115,6 @@ export default function FeedbackDashboard() {
     }
   };
 
-  // Stats calculation
   const totalSubmissions = feedbacks.length;
   const avgRating = totalSubmissions > 0
     ? (feedbacks.reduce((acc, f) => acc + f.rating, 0) / totalSubmissions).toFixed(1)
@@ -83,10 +122,10 @@ export default function FeedbackDashboard() {
 
   const getCategoryColor = (cat) => {
     switch (cat) {
-      case 'Bug': return { bg: 'rgba(239, 68, 68, 0.12)', text: '#f87171' }; // red
-      case 'Suggestion': return { bg: 'rgba(245, 158, 11, 0.12)', text: '#fbbf24' }; // yellow
-      case 'Other': return { bg: 'rgba(107, 114, 128, 0.12)', text: '#9ca3af' }; // gray
-      default: return { bg: 'rgba(139, 92, 246, 0.12)', text: '#a78bfa' }; // purple (General)
+      case 'Bug': return { bg: 'rgba(239, 68, 68, 0.12)', text: '#f87171' };
+      case 'Suggestion': return { bg: 'rgba(245, 158, 11, 0.12)', text: '#fbbf24' };
+      case 'Other': return { bg: 'rgba(107, 114, 128, 0.12)', text: '#9ca3af' };
+      default: return { bg: 'rgba(139, 92, 246, 0.12)', text: '#a78bfa' };
     }
   };
 
@@ -94,7 +133,6 @@ export default function FeedbackDashboard() {
     return '★'.repeat(rating) + '☆'.repeat(5 - rating);
   };
 
-  // Access check
   if (loading) {
     return (
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh' }}>
@@ -103,21 +141,109 @@ export default function FeedbackDashboard() {
     );
   }
 
+  // NON-ADMIN VIEW: Simple, beautiful feedback submission form
   if (!isAdmin(user)) {
     return (
-      <div className="card" style={{ padding: '3rem 2rem', textAlign: 'center', maxWidth: '500px', margin: '4rem auto' }}>
-        <span style={{ fontSize: '3rem' }}>🔒</span>
-        <h2 style={{ fontSize: 'var(--text-xl)', fontWeight: 700, marginTop: '1.5rem', color: 'var(--color-error)' }}>Access Denied</h2>
-        <p className="text-muted" style={{ marginTop: '0.5rem', fontSize: '0.95rem' }}>
-          This page is restricted to platform administrators only. If you believe this is an error, please contact support.
-        </p>
-        <Link href="/dashboard" className="btn btn-primary" style={{ marginTop: '1.5rem', display: 'inline-block' }}>
-          Back to Overview
-        </Link>
+      <div style={{ maxWidth: '650px', margin: '0 auto' }}>
+        {toast && (
+          <div className="toast-container">
+            <div className={`toast toast-${toast.type}`}>{toast.msg}</div>
+          </div>
+        )}
+
+        <div style={{ marginBottom: '2rem' }}>
+          <h1 style={{ fontSize: 'var(--text-2xl)', fontWeight: 700 }}>Send Direct Feedback</h1>
+          <p className="text-muted" style={{ marginTop: '0.25rem' }}>
+            Your feedback will be sent directly to <strong style={{ color: 'var(--color-primary-light)' }}>sanchitthakur2345@gmail.com</strong>
+          </p>
+        </div>
+
+        <div className="card" style={{ padding: '2rem', borderRadius: '16px' }}>
+          <form onSubmit={handleUserSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+              <div>
+                <label className="form-label">Category</label>
+                <select
+                  value={form.category}
+                  onChange={e => setForm({ ...form, category: e.target.value })}
+                  className="form-input"
+                  style={{ background: 'var(--color-bg-tertiary)' }}
+                >
+                  <option value="General">General Feedback</option>
+                  <option value="Suggestion">Feature Suggestion</option>
+                  <option value="Bug">Report a Bug</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="form-label">Rating</label>
+                <div style={{ display: 'flex', gap: '0.5rem', padding: '0.5rem 0' }}>
+                  {[1, 2, 3, 4, 5].map((index) => {
+                    const isActive = index <= (hoveredStar || form.rating);
+                    return (
+                      <button
+                        key={index}
+                        type="button"
+                        onMouseEnter={() => setHoveredStar(index)}
+                        onMouseLeave={() => setHoveredStar(0)}
+                        onClick={() => setForm({ ...form, rating: index })}
+                        style={{
+                          fontSize: '1.75rem',
+                          color: isActive ? '#fbbf24' : 'rgba(255,255,255,0.15)',
+                          background: 'none',
+                          border: 'none',
+                          cursor: 'pointer',
+                          padding: 0,
+                          lineHeight: 1,
+                        }}
+                      >
+                        ★
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <label className="form-label">Message</label>
+              <textarea
+                required
+                rows={5}
+                value={form.message}
+                onChange={e => setForm({ ...form, message: e.target.value })}
+                placeholder="Share your thoughts, suggestions, or bug reports..."
+                className="form-input"
+                style={{ background: 'var(--color-bg-tertiary)', resize: 'vertical' }}
+              />
+            </div>
+
+            <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', marginTop: '0.5rem' }}>
+              <button
+                type="submit"
+                disabled={submitting}
+                className="btn btn-primary"
+                style={{ flex: 1, justifyContent: 'center' }}
+              >
+                {submitting ? 'Sending...' : 'Send Feedback ✉️'}
+              </button>
+
+              <a
+                href="mailto:sanchitthakur2345@gmail.com?subject=PortBuilder%20Feedback"
+                className="btn btn-secondary"
+                style={{ textDecoration: 'none' }}
+              >
+                ✉️ Email Directly: sanchitthakur2345@gmail.com
+              </a>
+            </div>
+          </form>
+        </div>
       </div>
     );
   }
 
+  // ADMIN VIEW: Full feedback dashboard
   return (
     <div className="feedback-dashboard">
       {/* Toast Alert */}
@@ -131,7 +257,7 @@ export default function FeedbackDashboard() {
       <div className="feedback-header">
         <div>
           <h1 style={{ fontSize: 'var(--text-2xl)', fontWeight: 700 }}>Platform Feedback (Admin)</h1>
-          <p className="text-muted" style={{ marginTop: '0.25rem' }}>View feedback and ratings submitted by users of PortBuilder</p>
+          <p className="text-muted" style={{ marginTop: '0.25rem' }}>View feedback sent to sanchitthakur2345@gmail.com</p>
         </div>
       </div>
 
@@ -211,10 +337,7 @@ export default function FeedbackDashboard() {
             <span style={{ fontSize: '3rem' }}>💬</span>
             <h3 style={{ fontSize: '1.2rem', fontWeight: 600, marginTop: '1rem', color: 'var(--color-text-secondary)' }}>No feedback found</h3>
             <p className="text-muted" style={{ maxWidth: '400px', margin: '0.5rem auto 0', fontSize: '0.9rem' }}>
-              {filterCategory !== 'All' || filterRating !== 'All'
-                ? 'Try clearing your filters to see more results.'
-                : 'Feedback submitted by visitors on the PortBuilder landing page will appear here.'
-              }
+              Feedback submitted by visitors will appear here.
             </p>
           </div>
         ) : (
@@ -223,22 +346,13 @@ export default function FeedbackDashboard() {
               const catColor = getCategoryColor(item.category);
               return (
                 <div key={item.id} className="card feedback-item-card" style={{ padding: '1.5rem', position: 'relative' }}>
-                  
-                  {/* Top row */}
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '0.5rem' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                      {/* Avatar initials */}
                       <div style={{
-                        width: '40px',
-                        height: '40px',
-                        borderRadius: '50%',
+                        width: '40px', height: '40px', borderRadius: '50%',
                         background: 'linear-gradient(135deg, var(--color-primary), var(--color-primary-dark))',
-                        color: '#fff',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        fontWeight: 700,
-                        fontSize: '0.9rem'
+                        color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        fontWeight: 700, fontSize: '0.9rem'
                       }}>
                         {item.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase()}
                       </div>
@@ -254,32 +368,19 @@ export default function FeedbackDashboard() {
                     </div>
                   </div>
 
-                  {/* Badges */}
                   <div style={{ display: 'flex', gap: '0.5rem', margin: '0.75rem 0', flexWrap: 'wrap' }}>
                     <span style={{
-                      fontSize: '0.75rem',
-                      padding: '0.125rem 0.5rem',
-                      borderRadius: '4px',
-                      background: catColor.bg,
-                      color: catColor.text,
-                      fontWeight: 600
+                      fontSize: '0.75rem', padding: '0.125rem 0.5rem', borderRadius: '4px',
+                      background: catColor.bg, color: catColor.text, fontWeight: 600
                     }}>{item.category}</span>
                   </div>
 
-                  {/* Feedback Message */}
                   <p style={{
-                    fontSize: '0.925rem',
-                    color: 'var(--color-text-secondary)',
-                    lineHeight: 1.6,
-                    background: 'rgba(255, 255, 255, 0.02)',
-                    padding: '0.75rem 1rem',
-                    borderRadius: '8px',
-                    margin: '0.75rem 0',
-                    border: '1px solid rgba(255,255,255,0.03)',
-                    whiteSpace: 'pre-wrap'
+                    fontSize: '0.925rem', color: 'var(--color-text-secondary)', lineHeight: 1.6,
+                    background: 'rgba(255, 255, 255, 0.02)', padding: '0.75rem 1rem', borderRadius: '8px',
+                    margin: '0.75rem 0', border: '1px solid rgba(255,255,255,0.03)', whiteSpace: 'pre-wrap'
                   }}>{item.message}</p>
 
-                  {/* Actions Area */}
                   <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', marginTop: '1rem', borderTop: '1px solid rgba(255,255,255,0.04)', paddingTop: '0.75rem' }}>
                     <button
                       onClick={() => handleDelete(item.id)}
@@ -295,23 +396,6 @@ export default function FeedbackDashboard() {
           </div>
         )}
       </div>
-
-      <style jsx>{`
-        .feedback-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: flex-start;
-          margin-bottom: 1rem;
-        }
-        .feedback-item-card {
-          transition: transform 0.2s, box-shadow 0.2s;
-        }
-        .feedback-item-card:hover {
-          transform: translateY(-2px);
-          box-shadow: var(--shadow-md);
-          border-color: rgba(255, 255, 255, 0.12) !important;
-        }
-      `}</style>
     </div>
   );
 }

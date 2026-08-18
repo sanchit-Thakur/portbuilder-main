@@ -38,6 +38,7 @@ function Navbar() {
           <a href="#features" onClick={() => setMenuOpen(false)} style={{ fontSize: '0.9rem', fontWeight: 500, color: 'var(--color-text-secondary)', transition: 'color 0.2s' }}>Features</a>
           <a href="#themes" onClick={() => setMenuOpen(false)} style={{ fontSize: '0.9rem', fontWeight: 500, color: 'var(--color-text-secondary)', transition: 'color 0.2s' }}>Themes</a>
           <a href="#pricing" onClick={() => setMenuOpen(false)} style={{ fontSize: '0.9rem', fontWeight: 500, color: 'var(--color-text-secondary)', transition: 'color 0.2s' }}>Pricing</a>
+          <a href="#feedback" onClick={() => setMenuOpen(false)} style={{ fontSize: '0.9rem', fontWeight: 500, color: 'var(--color-text-secondary)', transition: 'color 0.2s' }}>Feedback</a>
           <Link href="/auth/login" className="btn btn-ghost">Log In</Link>
           <Link href="/auth/signup" className="btn btn-primary">Get Started Free</Link>
         </div>
