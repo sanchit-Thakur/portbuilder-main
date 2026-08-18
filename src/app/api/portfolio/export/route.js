@@ -151,8 +151,8 @@ function generateStandaloneHTML(user, p, skills, projects, experiences, educatio
     </div>
   </nav>
 
-  <main className="container">
-    <div className="hero">
+  <main class="container">
+    <div class="hero">
       ${p.profile_image ? `<img src="${p.profile_image}" alt="Profile" class="profile-img">` : ''}
       <h1>${p.hero_title || user.full_name || user.username}</h1>
       ${p.hero_subtitle ? `<div class="hero-subtitle">${p.hero_subtitle}</div>` : ''}

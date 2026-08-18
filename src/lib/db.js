@@ -106,8 +106,8 @@ export async function query(sql, params = []) {
     return rows;
   } else {
     // SQLite query execution
-    // Sanitize JSON array bindings for SQLite
-    const sanitizedParams = params.map(p => (typeof p === 'boolean' ? (p ? 1 : 0) : p));
+    // Sanitize JSON array bindings and undefined parameters for SQLite
+    const sanitizedParams = params.map(p => (p === undefined ? null : typeof p === 'boolean' ? (p ? 1 : 0) : p));
     const trimmedSql = sql.trim();
     const isSelect = /^SELECT/i.test(trimmedSql);
     

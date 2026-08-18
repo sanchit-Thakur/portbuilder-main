@@ -7,6 +7,7 @@ import { DEFAULT_SECTIONS_ORDER } from '@/lib/constants';
 export async function POST(request) {
   try {
     await ensureDbInitialized();
+    const { email, password, username, fullName } = await request.json();
     let finalUsername = username ? username.trim() : '';
     if (!finalUsername && email) {
       const emailPrefix = email.split('@')[0].toLowerCase().replace(/[^a-z0-9_-]/g, '');
