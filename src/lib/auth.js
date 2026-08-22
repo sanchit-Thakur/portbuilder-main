@@ -52,12 +52,19 @@ export async function getCurrentUser() {
     if (!token) return null;
 
     const decoded = verifyToken(token);
-    if (!decoded) return null;
+    if (!decoded) {
+      try { cookieStore.delete(TOKEN_NAME); } catch {}
+      return null;
+    }
 
     const user = await queryOne(
       'SELECT id, email, username, full_name, created_at FROM users WHERE id = ?',
       [decoded.userId]
     );
+    if (!user) {
+      try { cookieStore.delete(TOKEN_NAME); } catch {}
+      return null;
+    }
     return user;
   } catch {
     return null;

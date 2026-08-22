@@ -24,14 +24,14 @@ export default function DashboardLayout({ children }) {
     fetch('/api/portfolio')
       .then(async (r) => {
         if (r.status === 401) {
-          router.push(`/auth/login?redirect=${encodeURIComponent(pathname)}`);
+          router.push('/auth/login');
           return null;
         }
         return r.json();
       })
       .then(d => { if (d?.user) setUser(d.user); })
       .catch(() => {});
-  }, [pathname, router]);
+  }, [router]);
 
   const handleLogout = async () => {
     await fetch('/api/auth/logout', { method: 'POST' });
