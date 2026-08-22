@@ -3,209 +3,329 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 
-const SAMPLE_LATEX_CODE = `\\documentclass[10pt,letterpaper]{article}
-\\usepackage[utf8]{inputenc}
-\\usepackage[margin=0.5in]{geometry}
-\\usepackage{hyperref}
+// Featured Fake Sample: Aarav Sharma (Entry-Level AI & Full-Stack Engineer) matching the uploaded format
+const FAKE_SAMPLE_LATEX_TEMPLATE = `\\documentclass[10pt, a4paper]{article}
+
+% --- UNIVERSAL PREAMBLE BLOCK ---
+\\usepackage[a4paper, top=1cm, bottom=1cm, left=1.2cm, right=1.2cm]{geometry}
+\\usepackage{fontspec}
+\\usepackage[english, bidi=basic, provide=*]{babel}
+
+\\babelprovide[import, onchar=ids fonts]{english}
+
+% Classical Serif Font matching sample
+\\babelfont{rm}{Noto Serif}
+
 \\usepackage{enumitem}
-\\usepackage{titlesec}
-\\usepackage{xcolor}
+\\setlist[itemize]{label=-, leftmargin=0.15in, noitemsep, topsep=1pt, parsep=1pt}
+\\usepackage{hyperref}
+\\usepackage{color}
+
+% Color definitions
+\\definecolor{linkblue}{rgb}{0.0, 0.35, 0.65}
 
 \\hypersetup{
     colorlinks=true,
-    linkcolor=blue,
-    filecolor=magenta,      
-    urlcolor=blue,
+    linkcolor=linkblue,
+    urlcolor=linkblue,
 }
 
-% Style section titles
-\\titleformat{\\section}{\\large\\bfseries\\uppercase}{}{0em}{}[\\titlerule]
-\\titlespacing*{\\section}{0pt}{8pt}{4pt}
-
-% Custom list styling
-\\setlist[itemize]{leftmargin=*, noitemsep, topsep=2pt}
-
 \\begin{document}
-\\pagenumbering{gobble} % Hide page numbers
 
-% Header
+\\pagestyle{empty}
+
+% --- HEADER ---
 \\begin{center}
-    {\\Huge \\textbf{Alex Rivera}} \\\\[4pt]
-    \\small alex.rivera@example.com \\ $|$ \\ +1 (555) 019-2834 \\ $|$ \\ \\href{https://linkedin.com}{LinkedIn} \\ $|$ \\ \\href{https://github.com}{GitHub} \\ $|$ \\ \\href{https://example.com}{Portfolio}
+    {\\Huge \\textbf{Aarav Sharma}} \\\\[4pt]
+    \\small
+    \\href{mailto:aarav.sharma.dev@gmail.com}{aarav.sharma.dev@gmail.com} $|$ +91 9876543210 $|$ 
+    \\href{https://www.linkedin.com/in/aarav-sharma-dev/}{LinkedIn} $|$ 
+    \\href{https://github.com/aarav-sharma-dev}{GitHub} $|$ 
+    \\href{https://aaravsharma.dev}{Portfolio}
 \\end{center}
 
-% Profile summary
-\\section{Profile summary}
-Versatile \\textbf{Full-Stack Software Engineer} with a strong foundation in designing scalable web applications, distributed backend services, and interactive user interfaces. Experienced in modern \\textbf{JavaScript/TypeScript} and \\textbf{Python} ecosystems, cloud infrastructure, and RESTful API architecture. Passionate about writing clean, maintainable code and solving complex technical challenges.
+\\vspace{-4pt}
 
-% Education
-\\section{Education}
+% --- PROFILE SUMMARY ---
+\\noindent \\textbf{\\Large Profile summary}
+\\vspace{2pt}
+\\hrule
+\\vspace{3pt}
+\\noindent Entry-Level Data Scientist \\& AI Engineer with strong foundations in Machine Learning, Deep Learning (NLP \\& CV), and full-stack AI system integration. Experienced in developing scalable data pipelines using Python, vector databases, and modern Large Language Model (LLM) architectures. Demonstrated capabilities in predictive time-series modeling, automated speech recognition, and high-throughput REST API services. Passionate about solving complex quantitative challenges through statistical modeling.
+
+\\vspace{6pt}
+
+% --- EDUCATION ---
+\\noindent \\textbf{\\Large Education}
+\\vspace{2pt}
+\\hrule
+\\vspace{3pt}
 \\begin{itemize}
-  \\item \\textbf{Bachelor of Science in Computer Science} \\hfill 2020 -- 2024 \\\\
-  \\textit{State University of Technology} \\\\
-  Cumulative GPA: \\textbf{3.85 / 4.00}
-  \\item \\textbf{High School Diploma} \\hfill 2020 \\\\
-  Academic Honors & STEM Focus
+    \\item \\textbf{Bachelor of Technology in Computer Science \\& AI} \\hfill 2024--2028 \\\\
+    Indian Institute of Information Technology (IIIT), Delhi \\\\
+    CGPA: \\textbf{8.5}
+    \\item \\textbf{Senior Secondary Education (Class 12th)} \\hfill 2022 \\\\
+    CBSE Board \\\\
+    Percentage: \\textbf{78.5\\%}
+    \\item \\textbf{Secondary School Education (Class 10th)} \\hfill 2020 \\\\
+    CBSE Board \\\\
+    Percentage: \\textbf{86.2\\%}
 \\end{itemize}
 
-% Projects
-\\section{Projects}
+\\vspace{4pt}
 
-\\textbf{CloudScale: Distributed Task Scheduling Engine} \\hfill \\href{https://github.com}{[GitHub]}
+% --- SKILLS ---
+\\noindent \\textbf{\\Large Skills}
+\\vspace{2pt}
+\\hrule
+\\vspace{3pt}
 \\begin{itemize}
-  \\item Designed and implemented a fault-tolerant distributed job scheduler capable of handling \\textbf{10,000+ concurrent tasks} across asynchronous worker nodes.
-  \\item Integrated \\textbf{Redis} for low-latency pub/sub queues and in-memory state tracking, reducing task delay by \\textbf{45\\%}.
-  \\item Implemented automated container orchestration and health checks with comprehensive unit and integration testing.
-  \\item \\textbf{Tech Stack:} TypeScript, Node.js, Express, Redis, PostgreSQL, Docker
+    \\item \\textbf{Data Science \\& Machine Learning:} Data Cleaning, EDA, Feature Engineering, Statistical Analysis, Predictive Modeling, Scikit-learn, PyTorch, Pandas, NumPy, Matplotlib.
+    \\item \\textbf{AI \\& LLMs:} OpenAI API (GPT-4o), Whisper, RAG Pipelines, Vector Embeddings, LangChain, Qdrant, Prompt Engineering.
+    \\item \\textbf{Programming Languages:} Python, SQL, C++, Java, JavaScript, TypeScript, HTML, CSS.
+    \\item \\textbf{Tools \\& Databases:} MySQL, PostgreSQL, Git, GitHub, VS Code, Docker, Jupyter Notebooks.
+    \\item \\textbf{Core CS \\& Soft Skills:} Data Structures \\& Algorithms (DSA), Object-Oriented Programming (OOP), DBMS, Problem Solving, Adaptability, Teamwork.
 \\end{itemize}
 
-\\textbf{PulseFlow: Real-Time Collaborative Canvas} \\hfill \\href{https://github.com}{[GitHub]}
+\\vspace{4pt}
+
+% --- PROJECTS ---
+\\noindent \\textbf{\\Large Projects}
+\\vspace{2pt}
+\\hrule
+\\vspace{3pt}
+
+\\noindent \\href{https://github.com/aarav-sharma-dev/AeroHealth-Analytics}{\\textcolor{black}{\\textbf{AeroHealth: Real-Time Patient Vital \\& ECG Diagnostics Platform}}} \\hfill \\href{https://github.com/aarav-sharma-dev/AeroHealth-Analytics}{\\small [GitHub]}
 \\begin{itemize}
-  \\item Engineered a web-based collaborative workspace supporting simultaneous multi-user drawing, live cursors, and instant vector synchronization via \\textbf{WebSockets}.
-  \\item Optimized canvas rendering pipeline to maintain a consistent \\textbf{60 FPS} across complex multi-layered diagrams.
-  \\item Built modular state management with undo/redo capabilities and local storage snapshot caching.
-  \\item \\textbf{Tech Stack:} React, TypeScript, HTML5 Canvas, WebSockets, Tailwind CSS
+    \\item Developed a full-stack medical telemetry platform to streamline ECG signal processing, cardiac arrhythmia detection, and patient health analytics.
+    \\item Implemented real-time streaming state management using Redux Toolkit to monitor biometrics and historical health score trends.
+    \\item Designed a responsive, high-contrast dark-mode interface utilizing Tailwind CSS and Material UI for clinical usability.
+    \\item \\textbf{Tech Stack:} React.js, Next.js, Node.js, Express, MongoDB, MySQL, Redux Toolkit, Tailwind CSS, Material UI
 \\end{itemize}
 
-\\textbf{AuraMetrics: Application Telemetry \\& Observability Dashboard} \\hfill \\href{https://github.com}{[GitHub]}
+\\vspace{3pt}
+
+\\noindent \\href{https://github.com/aarav-sharma-dev/DevResume-ATS-Engine}{\\textcolor{black}{\\textbf{DevResume: Automated Developer Portfolio \\& ATS Resume Platform}}} \\hfill \\href{https://github.com/aarav-sharma-dev/DevResume-ATS-Engine}{\\small [GitHub]}
 \\begin{itemize}
-  \\item Developed a lightweight monitoring system to track server response times, HTTP status distributions, and error log frequencies in real time.
-  \\item Built high-performance async REST API endpoints using \\textbf{FastAPI} to aggregate and stream timeseries performance metrics.
-  \\item Designed interactive visualization graphs and configurable threshold notification alerts.
-  \\item \\textbf{Tech Stack:} Python, FastAPI, React, Chart.js, Docker, SQLite
+    \\item Engineered an interactive web application enabling automated generation of SEO-friendly developer portfolios and ATS-optimized resumes.
+    \\item Built real-time live preview compilation using Zustand for state synchronization and dynamic section reordering across modular UI blocks.
+    \\item Integrated one-click PDF print rendering and standalone HTML exporter, reducing developer portfolio setup time by 80\\%.
+    \\item \\textbf{Tech Stack:} Next.js 14, Tailwind CSS, Zustand, Server Actions, REST API Routes, MySQL, SQLite
 \\end{itemize}
 
-% Skills
-\\section{Skills}
+\\vspace{3pt}
+
+\\noindent \\href{https://github.com/aarav-sharma-dev/NexusSales-Forecasting}{\\textcolor{black}{\\textbf{NexusSales: Predictive Demand Forecasting \\& Revenue Analytics Engine}}} \\hfill \\href{https://github.com/aarav-sharma-dev/NexusSales-Forecasting}{\\small [GitHub]}
 \\begin{itemize}
-  \\item \\textbf{Frontend Engineering:} React, Next.js, TypeScript, JavaScript (ES6+), HTML5, CSS3, Tailwind CSS.
-  \\item \\textbf{Backend \\& Database:} Node.js, Express, Python, FastAPI, PostgreSQL, MongoDB, Redis, REST APIs.
-  \\item \\textbf{Developer Tools \\& DevOps:} Git, GitHub Actions, Docker, CI/CD Pipelines, Linux, Jest.
+    \\item Built time-series ML models (Holt-Winters, Ridge Regression) across 75k+ retail transactions, achieving an $R^2$ of 0.981 and 3.25\\% MAPE.
+    \\item Developed a dynamic What-If pricing engine to model price elasticity of demand ($E_d$), marketing ad spend, and gross margin variance.
+    \\item Designed a responsive dark-mode analytics dashboard connected to Node.js REST APIs and a Python data science pipeline.
+    \\item \\textbf{Tech Stack:} Next.js, TypeScript, Python, Node.js/Express, Tailwind CSS, Recharts, Statsmodels, Docker
+\\end{itemize}
+
+\\vspace{4pt}
+
+% --- ACHIEVEMENTS / PARTICIPATION ---
+\\noindent \\textbf{\\Large Achievements / Participation}
+\\vspace{2pt}
+\\hrule
+\\vspace{3pt}
+\\begin{itemize}
+    \\item Solved 250+ Data Structures \\& Algorithms (DSA) problems across platforms like LeetCode and GeeksforGeeks.
+    \\item Built and deployed 4+ end-to-end Machine Learning \\& AI applications with live interactive user interfaces.
+    \\item Maintained a 100+ day consistent coding streak on GitHub, actively contributing to open-source developer tools.
+    \\item Finalist in National Level AI Hackathon 2024 for developing a real-time computer vision assisted smart surveillance tool.
+\\end{itemize}
+
+\\vspace{4pt}
+
+% --- CERTIFICATIONS ---
+\\noindent \\textbf{\\Large Certifications}
+\\vspace{2pt}
+\\hrule
+\\vspace{3pt}
+\\begin{itemize}
+    \\item \\textbf{Claude Code in Action} --- Certified by Anthropic. \\hfill \\href{https://anthropic.com}{\\small [Link]}
+    \\item \\textbf{Basics of Data Science} --- Certified by uniAthena. \\hfill \\href{https://uniathena.com}{\\small [Link]}
+    \\item \\textbf{Introduction to Prompt Engineering} --- Certified by Simplilearn. \\hfill \\href{https://simplilearn.com}{\\small [Link]}
+    \\item \\textbf{C++ Programming \\& DSA Fundamentals} --- Certified in OOP and Data Structures. \\hfill \\href{https://hackerrank.com}{\\small [Link]}
+    \\item \\textbf{Programming Fundamentals (Python)} --- Issued by HackerRank. \\hfill \\href{https://hackerrank.com}{\\small [Link]}
+    \\item \\textbf{Professional Writing} --- Issued by Saylor Academy. \\hfill \\href{https://saylor.org}{\\small [Link]}
+    \\item \\textbf{Career Skills in Data Analytics} --- Issued by LinkedIn Learning. \\hfill \\href{https://linkedin.com}{\\small [Link]}
 \\end{itemize}
 
 \\end{document}`;
+
+
 
 const SAMPLE_HTML_CODE = `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Alex Rivera - Resume</title>
+  <title>Aarav Sharma - ATS Resume</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&display=swap');
-    
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    
     body {
-      font-family: 'Source Serif 4', Georgia, 'Times New Roman', serif;
-      color: #111827;
-      background: #ffffff;
-      line-height: 1.45;
-      font-size: 10.5pt;
-      padding: 40px 45px;
-      max-width: 800px;
-      margin: 0 auto;
+      font-family: 'Source Serif 4', 'Noto Serif', 'Times New Roman', Georgia, serif;
+      color: #000; background: #fff; line-height: 1.34; font-size: 10pt;
+      padding: 24px 34px; max-width: 850px; margin: 0 auto;
     }
+    .resume-header { text-align: center; margin-bottom: 8px; }
+    .resume-name { font-size: 24pt; font-weight: 700; color: #000; letter-spacing: -0.01em; margin-bottom: 2px; font-family: inherit; }
+    .resume-contacts { font-size: 9.5pt; color: #222; }
+    .resume-contacts a { color: #0059a6; text-decoration: none; font-weight: 500; }
+    .resume-contacts a:hover { text-decoration: underline; }
+    .sep { color: #555; margin: 0 5px; font-size: 9pt; }
     
-    .header { text-align: center; margin-bottom: 16px; }
-    .header h1 { font-size: 24pt; font-weight: 700; color: #000000; margin-bottom: 6px; letter-spacing: -0.01em; }
-    .contact-line { font-size: 9.5pt; color: #374151; }
-    .contact-line a { color: #1d4ed8; text-decoration: none; }
-    .contact-sep { color: #9ca3af; margin: 0 6px; }
+    .section-header { margin-top: 10px; margin-bottom: 3px; }
+    .section-title { font-size: 12.5pt; font-weight: 700; color: #000; font-family: inherit; margin-bottom: 2px; }
+    .section-line { width: 100%; border-bottom: 1px solid #000; margin-bottom: 5px; }
     
-    h2.section-title { font-size: 12pt; font-weight: 700; color: #000000; margin-top: 16px; margin-bottom: 4px; }
-    .divider { border: none; border-top: 1px solid #111827; margin-bottom: 10px; }
+    .resume-para { font-size: 9.75pt; color: #000; text-align: justify; line-height: 1.36; margin-bottom: 5px; }
     
-    p.summary { font-size: 10pt; text-align: justify; color: #1f2937; margin-bottom: 12px; line-height: 1.5; }
-    ul.item-list { padding-left: 18px; margin-bottom: 10px; }
-    ul.item-list li { margin-bottom: 4px; font-size: 10pt; color: #1f2937; }
+    .resume-list { list-style-type: disc; padding-left: 18px; margin-bottom: 5px; }
+    .resume-list li { margin-bottom: 2.5px; font-size: 9.75pt; color: #000; text-align: justify; line-height: 1.35; }
     
-    .item-header { display: flex; justify-content: space-between; align-items: baseline; font-size: 10.5pt; }
-    .item-title { font-weight: 700; color: #000000; }
-    .item-date { font-weight: 400; font-size: 10pt; color: #111827; }
-    .item-sub { font-size: 10pt; color: #374151; font-weight: 600; margin-bottom: 2px; }
+    .item-top { display: flex; justify-content: space-between; align-items: baseline; font-size: 9.75pt; }
+    .item-left { font-weight: 700; color: #000; }
+    .item-right { font-size: 9.5pt; color: #000; font-weight: 400; text-align: right; }
+    .item-sub { font-size: 9.5pt; color: #111; margin-top: 1px; }
     
-    .project-item { margin-bottom: 12px; }
-    .project-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px; }
-    .project-title { font-weight: 700; font-size: 10.5pt; color: #000000; }
-    .project-link { font-size: 9.5pt; color: #1d4ed8; text-decoration: none; }
+    .project-heading { display: flex; justify-content: space-between; align-items: baseline; margin-top: 6px; margin-bottom: 2px; }
+    .proj-name { font-weight: 700; font-size: 10pt; color: #000; }
+    .proj-link a, .ext-link { color: #0059a6; text-decoration: none; font-size: 9pt; font-weight: 500; }
+    .proj-link-bold { color: #000 !important; text-decoration: none; }
+    .proj-link-bold:hover { text-decoration: underline; }
     
-    .skills-list { padding-left: 18px; }
-    .skills-list li { margin-bottom: 5px; font-size: 10pt; color: #1f2937; }
-    .skill-cat { font-weight: 700; color: #000000; }
-
-    @media print { body { padding: 0; max-width: 100%; } .contact-line a { color: #000; } }
+    a { color: #0059a6; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    strong { font-weight: 700; color: #000; }
+    
+    @media print {
+      body { padding: 0; max-width: 100%; font-size: 9.5pt; }
+      .section-line { border-bottom: 1px solid #000; }
+    }
   </style>
 </head>
 <body>
-  <div class="header">
-    <h1>Alex Rivera</h1>
-    <div class="contact-line">
-      <a href="mailto:alex.rivera@example.com">alex.rivera@example.com</a>
-      <span class="contact-sep">|</span>
-      <span>+1 (555) 019-2834</span>
-      <span class="contact-sep">|</span>
-      <a href="https://linkedin.com">LinkedIn</a>
-      <span class="contact-sep">|</span>
-      <a href="https://github.com">GitHub</a>
-      <span class="contact-sep">|</span>
-      <a href="https://example.com">Portfolio</a>
+  <div class="resume-header">
+    <h1 class="resume-name">Aarav Sharma</h1>
+    <div class="resume-contacts">
+      <a href="mailto:aarav.sharma.dev@gmail.com">aarav.sharma.dev@gmail.com</a>
+      <span class="sep">|</span>
+      <span>+91 9876543210</span>
+      <span class="sep">|</span>
+      <a href="https://www.linkedin.com/in/aarav-sharma-dev/">LinkedIn</a>
+      <span class="sep">|</span>
+      <a href="https://github.com/aarav-sharma-dev">GitHub</a>
+      <span class="sep">|</span>
+      <a href="https://aaravsharma.dev">Portfolio</a>
     </div>
   </div>
 
-  <h2 class="section-title">Profile summary</h2>
-  <div class="divider"></div>
-  <p class="summary">
-    Versatile <strong>Full-Stack Software Engineer</strong> with a strong foundation in designing scalable web applications, distributed backend services, and interactive user interfaces. Experienced in modern <strong>JavaScript/TypeScript</strong> and <strong>Python</strong> ecosystems, cloud infrastructure, and RESTful API architecture.
+  <div class="section-header">
+    <h2 class="section-title">Profile summary</h2>
+    <div class="section-line"></div>
+  </div>
+  <p class="resume-para">
+    Entry-Level Data Scientist & AI Engineer with strong foundations in Machine Learning, Deep Learning (NLP & CV), and full-stack AI system integration. Experienced in developing scalable data pipelines using Python, vector databases, and modern Large Language Model (LLM) architectures. Demonstrated capabilities in predictive time-series modeling, automated speech recognition, and high-throughput REST API services. Passionate about solving complex quantitative challenges through statistical modeling.
   </p>
 
-  <h2 class="section-title">Education</h2>
-  <div class="divider"></div>
-  <ul class="item-list" style="list-style-type: disc;">
+  <div class="section-header">
+    <h2 class="section-title">Education</h2>
+    <div class="section-line"></div>
+  </div>
+  <ul class="resume-list">
     <li>
-      <div class="item-header">
-        <span class="item-title">Bachelor of Science in Computer Science</span>
-        <span class="item-date">2020–2024</span>
+      <div class="item-top">
+        <span class="item-left">Bachelor of Technology in Computer Science & AI</span>
+        <span class="item-right">2024–2028</span>
       </div>
-      <div class="item-sub">State University of Technology</div>
-      <div>Cumulative GPA: <strong>3.85 / 4.00</strong></div>
+      <div class="item-sub">Indian Institute of Information Technology (IIIT), Delhi<br />CGPA: <strong>8.5</strong></div>
+    </li>
+    <li>
+      <div class="item-top">
+        <span class="item-left">Senior Secondary Education (Class 12th)</span>
+        <span class="item-right">2022</span>
+      </div>
+      <div class="item-sub">CBSE Board<br />Percentage: <strong>78.5%</strong></div>
+    </li>
+    <li>
+      <div class="item-top">
+        <span class="item-left">Secondary School Education (Class 10th)</span>
+        <span class="item-right">2020</span>
+      </div>
+      <div class="item-sub">CBSE Board<br />Percentage: <strong>86.2%</strong></div>
     </li>
   </ul>
 
-  <h2 class="section-title">Projects</h2>
-  <div class="divider"></div>
-  <div class="project-item">
-    <div class="project-header">
-      <span class="project-title">CloudScale: Distributed Task Scheduling Engine</span>
-      <a href="https://github.com" class="project-link">[GitHub]</a>
-    </div>
-    <ul class="item-list" style="list-style-type: disc;">
-      <li>Designed and implemented a fault-tolerant distributed job scheduler capable of handling <strong>10,000+ concurrent tasks</strong> across asynchronous worker nodes.</li>
-      <li><strong>Tech Stack:</strong> TypeScript, Node.js, Express, Redis, PostgreSQL, Docker</li>
-    </ul>
+  <div class="section-header">
+    <h2 class="section-title">Skills</h2>
+    <div class="section-line"></div>
   </div>
+  <ul class="resume-list">
+    <li><strong>Data Science & Machine Learning:</strong> Data Cleaning, EDA, Feature Engineering, Statistical Analysis, Predictive Modeling, Scikit-learn, PyTorch, Pandas, NumPy, Matplotlib.</li>
+    <li><strong>AI & LLMs:</strong> OpenAI API (GPT-4o), Whisper, RAG Pipelines, Vector Embeddings, LangChain, Qdrant, Prompt Engineering.</li>
+    <li><strong>Programming Languages:</strong> Python, SQL, C++, Java, JavaScript, TypeScript, HTML, CSS.</li>
+    <li><strong>Tools & Databases:</strong> MySQL, PostgreSQL, Git, GitHub, VS Code, Docker, Jupyter Notebooks.</li>
+    <li><strong>Core CS & Soft Skills:</strong> Data Structures & Algorithms (DSA), Object-Oriented Programming (OOP), DBMS, Problem Solving, Adaptability, Teamwork.</li>
+  </ul>
 
-  <div class="project-item">
-    <div class="project-header">
-      <span class="project-title">PulseFlow: Real-Time Collaborative Canvas</span>
-      <a href="https://github.com" class="project-link">[GitHub]</a>
-    </div>
-    <ul class="item-list" style="list-style-type: disc;">
-      <li>Engineered a web-based collaborative workspace supporting simultaneous multi-user drawing, live cursors, and instant vector synchronization via <strong>WebSockets</strong>.</li>
-      <li><strong>Tech Stack:</strong> React, TypeScript, HTML5 Canvas, WebSockets, Tailwind CSS</li>
-    </ul>
+  <div class="section-header">
+    <h2 class="section-title">Projects</h2>
+    <div class="section-line"></div>
   </div>
+  <div class="project-heading">
+    <span class="proj-name"><a href="https://github.com/aarav-sharma-dev/AeroHealth-Analytics" class="proj-link-bold">AeroHealth: Real-Time Patient Vital & ECG Diagnostics Platform</a></span>
+    <span class="proj-link"><a href="https://github.com/aarav-sharma-dev/AeroHealth-Analytics" class="ext-link">[GitHub]</a></span>
+  </div>
+  <ul class="resume-list">
+    <li>Developed a full-stack medical telemetry platform to streamline ECG signal processing, cardiac arrhythmia detection, and patient health analytics.</li>
+    <li>Implemented real-time streaming state management using Redux Toolkit to monitor biometrics and historical health score trends.</li>
+    <li>Designed a responsive, high-contrast dark-mode interface utilizing Tailwind CSS and Material UI for clinical usability.</li>
+    <li><strong>Tech Stack:</strong> React.js, Next.js, Node.js, Express, MongoDB, MySQL, Redux Toolkit, Tailwind CSS, Material UI</li>
+  </ul>
 
-  <h2 class="section-title">Skills</h2>
-  <div class="divider"></div>
-  <ul class="skills-list" style="list-style-type: disc;">
-    <li><span class="skill-cat">Frontend Engineering:</span> React, Next.js, TypeScript, JavaScript, HTML5, CSS3, Tailwind CSS.</li>
-    <li><span class="skill-cat">Backend & Cloud:</span> Node.js, Express, Python, FastAPI, PostgreSQL, MongoDB, Redis, Docker.</li>
-    <li><span class="skill-cat">Developer Tools:</span> Git, GitHub Actions, CI/CD, Linux, Jest.</li>
+  <div class="project-heading">
+    <span class="proj-name"><a href="https://github.com/aarav-sharma-dev/DevResume-ATS-Engine" class="proj-link-bold">DevResume: Automated Developer Portfolio & ATS Resume Platform</a></span>
+    <span class="proj-link"><a href="https://github.com/aarav-sharma-dev/DevResume-ATS-Engine" class="ext-link">[GitHub]</a></span>
+  </div>
+  <ul class="resume-list">
+    <li>Engineered an interactive web application enabling automated generation of SEO-friendly developer portfolios and ATS-optimized resumes.</li>
+    <li>Built real-time live preview compilation using Zustand for state synchronization and dynamic section reordering across modular UI blocks.</li>
+    <li>Integrated one-click PDF print rendering and standalone HTML exporter, reducing developer portfolio setup time by 80%.</li>
+    <li><strong>Tech Stack:</strong> Next.js 14, Tailwind CSS, Zustand, Server Actions, REST API Routes, MySQL, SQLite</li>
+  </ul>
+
+  <div class="section-header">
+    <h2 class="section-title">Achievements / Participation</h2>
+    <div class="section-line"></div>
+  </div>
+  <ul class="resume-list">
+    <li>Solved 250+ Data Structures & Algorithms (DSA) problems across platforms like LeetCode and GeeksforGeeks.</li>
+    <li>Built and deployed 4+ end-to-end Machine Learning & AI applications with live interactive user interfaces.</li>
+    <li>Maintained a 100+ day consistent coding streak on GitHub, actively contributing to open-source developer tools.</li>
+    <li>Finalist in National Level AI Hackathon 2024 for developing a real-time computer vision assisted smart surveillance tool.</li>
+  </ul>
+
+  <div class="section-header">
+    <h2 class="section-title">Certifications</h2>
+    <div class="section-line"></div>
+  </div>
+  <ul class="resume-list">
+    <li><div class="item-top"><span class="item-left"><strong>Claude Code in Action</strong> — Certified by Anthropic.</span><span class="item-right"><a href="https://anthropic.com" class="ext-link">[Link]</a></span></div></li>
+    <li><div class="item-top"><span class="item-left"><strong>Basics of Data Science</strong> — Certified by uniAthena.</span><span class="item-right"><a href="https://uniathena.com" class="ext-link">[Link]</a></span></div></li>
+    <li><div class="item-top"><span class="item-left"><strong>Introduction to Prompt Engineering</strong> — Certified by Simplilearn.</span><span class="item-right"><a href="https://simplilearn.com" class="ext-link">[Link]</a></span></div></li>
+    <li><div class="item-top"><span class="item-left"><strong>C++ Programming & DSA Fundamentals</strong> — Certified in OOP and Data Structures.</span><span class="item-right"><a href="https://hackerrank.com" class="ext-link">[Link]</a></span></div></li>
+    <li><div class="item-top"><span class="item-left"><strong>Programming Fundamentals (Python)</strong> — Issued by HackerRank.</span><span class="item-right"><a href="https://hackerrank.com" class="ext-link">[Link]</a></span></div></li>
+    <li><div class="item-top"><span class="item-left"><strong>Professional Writing</strong> — Issued by Saylor Academy.</span><span class="item-right"><a href="https://saylor.org" class="ext-link">[Link]</a></span></div></li>
+    <li><div class="item-top"><span class="item-left"><strong>Career Skills in Data Analytics</strong> — Issued by LinkedIn Learning.</span><span class="item-right"><a href="https://linkedin.com" class="ext-link">[Link]</a></span></div></li>
   </ul>
 </body>
 </html>`;
 
-// Engine to convert LaTeX code into formatted HTML for iframe live preview
+// High-fidelity LaTeX to HTML Live Compiler Engine
 function renderLatexToHtml(latex) {
   if (!latex) return '';
 
@@ -214,89 +334,205 @@ function renderLatexToHtml(latex) {
     return latex;
   }
 
-  // 1. Remove comments
-  let text = latex.replace(/%[^\n]*/g, '');
+  // 1. Remove comments (% not preceded by backslash)
+  let text = latex.replace(/(^|[^\\])%[^\n]*/g, '$1');
 
-  // 2. Extract Document Body if \begin{document} is present
+  // 2. Extract Document Body
   const docMatch = text.match(/\\begin\{document\}([\s\S]*?)\\end\{document\}/);
   if (docMatch) {
     text = docMatch[1];
   }
 
-  // 3. Unescape LaTeX Special Characters
-  text = text
-    .replace(/\\\&/g, '&')
-    .replace(/\\_/g, '_')
-    .replace(/\\%/g, '%')
-    .replace(/\\\$[|\s]*\\\$|\\\$|\\\|/g, '<span style="color:#9ca3af; margin:0 6px;">|</span>');
+  // Helper to format inline LaTeX text (bold, italic, links, math, entities)
+  function formatInline(str) {
+    if (!str) return '';
+    let s = str
+      .replace(/\$\s*\|\s*\$/g, ' | ')
+      .replace(/\$\s*\\\|\s*\$/g, ' | ')
+      .replace(/\$R\^2\$/g, 'R<sup>2</sup>')
+      .replace(/\(\$E_d\$\)/g, '(E<sub>d</sub>)')
+      .replace(/\\&/g, '&')
+      .replace(/\\_/g, '_')
+      .replace(/\\%/g, '%')
+      .replace(/---/g, ' — ')
+      .replace(/--/g, '–');
 
-  // 4. Center Blocks \begin{center} ... \end{center}
-  text = text.replace(/\\begin\{center\}([\s\S]*?)\\end\{center\}/g, (m, inner) => {
-    return `<div style="text-align:center; margin-bottom:16px;">${inner}</div>`;
-  });
+    // \href{url}{\textcolor{black}{\textbf{Title}}}
+    s = s.replace(/\\href\{([^}]+)\}\{\\textcolor\{[^}]*\}\{\\textbf\{([^}]+)\}\}\}/g, '<a href="$1" class="proj-link-bold" target="_blank"><strong>$2</strong></a>');
+    s = s.replace(/\\href\{([^}]+)\}\{\\textbf\{([^}]+)\}\}/g, '<a href="$1" class="proj-link-bold" target="_blank"><strong>$2</strong></a>');
+    s = s.replace(/\\href\{([^}]+)\}\{\\small\s*\[([^\]]+)\]\}/g, '<a href="$1" class="ext-link" target="_blank">[$2]</a>');
+    s = s.replace(/\\href\{([^}]+)\}\{([^}]+)\}/g, '<a href="$1" target="_blank">$2</a>');
 
-  // 5. Clean LaTeX setup commands
-  text = text
-    .replace(/\\Huge/g, '')
-    .replace(/\\large/g, '')
-    .replace(/\\small/g, '')
-    .replace(/\\pagenumbering\{[^}]*\}/g, '')
-    .replace(/\\titleformat\{[^}]*\}\{[^}]*\}\{[^}]*\}\{[^}]*\}\[[^\]]*\]/g, '')
-    .replace(/\\titlespacing\*?\{[^}]*\}\{[^}]*\}\{[^}]*\}\{[^}]*\}/g, '')
-    .replace(/\\setlist\[[^\]]*\]\{[^}]*\}/g, '')
-    .replace(/\\hypersetup\{[\s\S]*?\}/g, '')
-    .replace(/\\documentclass\[[^\]]*\]\{[^}]*\}/g, '')
-    .replace(/\\usepackage(\[[^\]]*\])?\{[^}]*\}/g, '');
+    s = s.replace(/\\textcolor\{[^}]*\}\{([^}]+)\}/g, '$1');
+    s = s.replace(/\\textbf\{([^}]+)\}/g, '<strong>$1</strong>');
+    s = s.replace(/\\textit\{([^}]+)\}/g, '<em>$1</em>');
+    s = s.replace(/\\small/g, '');
+    s = s.replace(/\\Large/g, '');
+    s = s.replace(/\\noindent/g, '');
+    s = s.replace(/\\vspace\{[^}]*\}/g, '');
+    s = s.replace(/\\\\/g, '');
+    s = s.replace(/\\/g, '');
+    return s.trim();
+  }
 
-  // 6. Section Titles \section{Title}
-  text = text.replace(/\\section\{([^}]+)\}/g, (m, title) => {
-    return `<h2 style="font-size:12pt; font-weight:700; text-transform:capitalize; margin-top:18px; margin-bottom:4px; color:#000000; font-family: Source Serif 4, Georgia, serif;">${title}</h2><hr style="border:none; border-top:1px solid #111827; margin-bottom:10px;" />`;
-  });
+  // Parse Header \begin{center} ... \end{center}
+  let headerHtml = '';
+  const centerMatch = text.match(/\\begin\{center\}([\s\S]*?)\\end\{center\}/);
+  if (centerMatch) {
+    let rawHeader = centerMatch[1];
+    let nameMatch = rawHeader.match(/\{?\\Huge\s*\\textbf\{([^}]+)\}\}?/);
+    let name = nameMatch ? nameMatch[1] : 'Resume';
+    
+    let linksPart = rawHeader.replace(/\{?\\Huge\s*\\textbf\{([^}]+)\}\}?(\s*\\\\(?:\s*\[[^\]]*\])?)?/, '');
+    let formattedLinks = formatInline(linksPart)
+      .replace(/\|/g, '<span class="sep">|</span>');
 
-  // 7. Bold and Italic formatting
-  text = text.replace(/\\textbf\{([^}]+)\}/g, '<strong>$1</strong>');
-  text = text.replace(/\\textit\{([^}]+)\}/g, '<em>$1</em>');
+    headerHtml = `<div class="resume-header"><h1 class="resume-name">${name}</h1><div class="resume-contacts">${formattedLinks}</div></div>`;
+    text = text.replace(/\\begin\{center\}[\s\S]*?\\end\{center\}/, '');
+  }
 
-  // 8. Href Links \href{url}{label}
-  text = text.replace(/\\href\{([^}]+)\}\{([^}]+)\}/g, '<a href="$1" style="color:#1d4ed8; text-decoration:none;" target="_blank">$2</a>');
+  // Process blocks
+  const blocks = [];
+  const lines = text.split('\n');
+  let inItemize = false;
+  let currentList = [];
+  let currentItemLines = [];
 
-  // 9. \hfill alignment (e.g. Title \hfill Date \\)
-  text = text.replace(/([^\n\\]+)\\hfill\s+([^\n\\]+)(\\\\)?/g, (m, left, right) => {
-    const l = left.replace(/[{}]/g, '').trim();
-    const r = right.replace(/[{}]/g, '').trim();
-    return `<div style="display:flex; justify-content:space-between; align-items:baseline; font-size:10.5pt; margin-bottom:2px;"><span style="font-weight:600;">${l}</span><span style="font-size:10pt; color:#111827;">${r}</span></div>`;
-  });
+  function flushCurrentItem() {
+    if (currentItemLines.length > 0) {
+      let firstLine = currentItemLines[0].trim();
+      let restLines = currentItemLines.slice(1).map(l => l.trim()).filter(Boolean);
 
-  // 10. Itemize lists & Items
-  text = text.replace(/\\begin\{itemize\}/g, `<ul style="padding-left:18px; margin-bottom:10px; list-style-type:disc;">`);
-  text = text.replace(/\\end\{itemize\}/g, `</ul>`);
-  
-  text = text.replace(/\\item\s+([\s\S]*?)(?=\\item|\\end\{itemize\}|<ul|<\/ul>|\\section|\n\n|$)/g, (m, content) => {
-    return `<li style="margin-bottom:4px; font-size:10pt; color:#1f2937;">${content.replace(/[{}]/g, '').trim()}</li>`;
-  });
+      if (firstLine.includes('\\hfill')) {
+        let parts = firstLine.split('\\hfill');
+        let left = formatInline(parts[0]);
+        let right = formatInline(parts[1]);
+        let sub = restLines.map(l => formatInline(l)).filter(Boolean).join('<br />');
+        currentList.push(`<li><div class="item-top"><span class="item-left">${left}</span><span class="item-right">${right}</span></div>${sub ? `<div class="item-sub">${sub}</div>` : ''}</li>`);
+      } else {
+        let full = currentItemLines.map(l => formatInline(l)).filter(Boolean).join(' ');
+        currentList.push(`<li>${full}</li>`);
+      }
+      currentItemLines = [];
+    }
+  }
 
-  // 11. Clean line breaks and stray braces
-  text = text.replace(/\\\\\s*\[[^\]]*\]|\\\\/g, '<br />');
-  text = text.replace(/[{}]/g, '');
+  function flushList() {
+    flushCurrentItem();
+    if (currentList.length > 0) {
+      blocks.push(`<ul class="resume-list">${currentList.join('')}</ul>`);
+      currentList = [];
+    }
+    inItemize = false;
+  }
+
+  for (let i = 0; i < lines.length; i++) {
+    let line = lines[i].trim();
+    if (!line) continue;
+
+    // Check section header: \noindent \textbf{\Large ...} or \section{...}
+    let secMatch = line.match(/^\\noindent\s*\\textbf\{\\Large\s*([^}]+)\}/) || line.match(/^\\section\{([^}]+)\}/);
+    if (secMatch) {
+      flushList();
+      blocks.push(`<div class="section-header"><h2 class="section-title">${secMatch[1].trim()}</h2><div class="section-line"></div></div>`);
+      continue;
+    }
+
+    if (line === '\\hrule' || line.startsWith('\\vspace') || line.startsWith('\\pagestyle') || line.startsWith('\\usepackage') || line.startsWith('\\documentclass') || line.startsWith('\\babel') || line.startsWith('\\definecolor') || line.startsWith('\\hypersetup') || line.startsWith('\\setlist') || line.startsWith('\\titlespacing') || line.startsWith('\\titleformat')) {
+      continue;
+    }
+
+    if (line.includes('\\begin{itemize}')) {
+      flushList();
+      inItemize = true;
+      continue;
+    }
+
+    if (line.includes('\\end{itemize}')) {
+      flushList();
+      continue;
+    }
+
+    if (inItemize) {
+      if (line.startsWith('\\item')) {
+        flushCurrentItem();
+        currentItemLines.push(line.replace(/^\\item\s*/, ''));
+      } else {
+        currentItemLines.push(line);
+      }
+      continue;
+    }
+
+    // Check standalone project line with \hfill (e.g. \noindent \href{...}{...} \hfill \href{...}{[GitHub]})
+    if (line.includes('\\hfill')) {
+      flushList();
+      let parts = line.split('\\hfill');
+      let left = formatInline(parts[0]);
+      let right = formatInline(parts[1]);
+      blocks.push(`<div class="project-heading"><span class="proj-name">${left}</span><span class="proj-link">${right}</span></div>`);
+      continue;
+    }
+
+    // Normal paragraph text (e.g. Profile summary)
+    flushList();
+    blocks.push(`<p class="resume-para">${formatInline(line)}</p>`);
+  }
+
+  flushList();
+
+  const bodyHtml = headerHtml + '\n' + blocks.join('\n');
 
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <style>
-    @import url("https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&display=swap");
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: "Source Serif 4", Georgia, "Times New Roman", serif;
-      color: #111827; background: #ffffff; line-height: 1.45; font-size: 10.5pt;
-      padding: 40px 45px; max-width: 800px; margin: 0 auto;
-    }
-    a { color: #1d4ed8; text-decoration: none; }
-    @media print { body { padding: 0; max-width: 100%; } }
-  </style>
+<meta charset="UTF-8">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Source Serif 4', 'Noto Serif', 'Times New Roman', Georgia, serif;
+    color: #000; background: #fff; line-height: 1.34; font-size: 10pt;
+    padding: 24px 34px; max-width: 850px; margin: 0 auto;
+  }
+  .resume-header { text-align: center; margin-bottom: 8px; }
+  .resume-name { font-size: 24pt; font-weight: 700; color: #000; letter-spacing: -0.01em; margin-bottom: 2px; font-family: inherit; }
+  .resume-contacts { font-size: 9.5pt; color: #222; }
+  .resume-contacts a { color: #0059a6; text-decoration: none; font-weight: 500; }
+  .resume-contacts a:hover { text-decoration: underline; }
+  .sep { color: #555; margin: 0 5px; font-size: 9pt; }
+  
+  .section-header { margin-top: 10px; margin-bottom: 3px; }
+  .section-title { font-size: 12.5pt; font-weight: 700; color: #000; font-family: inherit; margin-bottom: 2px; }
+  .section-line { width: 100%; border-bottom: 1px solid #000; margin-bottom: 5px; }
+  
+  .resume-para { font-size: 9.75pt; color: #000; text-align: justify; line-height: 1.36; margin-bottom: 5px; }
+  
+  .resume-list { list-style-type: disc; padding-left: 18px; margin-bottom: 5px; }
+  .resume-list li { margin-bottom: 2.5px; font-size: 9.75pt; color: #000; text-align: justify; line-height: 1.35; }
+  
+  .item-top { display: flex; justify-content: space-between; align-items: baseline; font-size: 9.75pt; }
+  .item-left { font-weight: 700; color: #000; }
+  .item-right { font-size: 9.5pt; color: #000; font-weight: 400; text-align: right; }
+  .item-sub { font-size: 9.5pt; color: #111; margin-top: 1px; }
+  
+  .project-heading { display: flex; justify-content: space-between; align-items: baseline; margin-top: 6px; margin-bottom: 2px; }
+  .proj-name { font-weight: 700; font-size: 10pt; color: #000; }
+  .proj-link a, .ext-link { color: #0059a6; text-decoration: none; font-size: 9pt; font-weight: 500; }
+  .proj-link-bold { color: #000 !important; text-decoration: none; }
+  .proj-link-bold:hover { text-decoration: underline; }
+  
+  a { color: #0059a6; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  strong { font-weight: 700; color: #000; }
+  
+  @media print {
+    body { padding: 0; max-width: 100%; font-size: 9.5pt; }
+    .section-line { border-bottom: 1px solid #000; }
+  }
+</style>
 </head>
 <body>
-  ${text}
+${bodyHtml}
 </body>
 </html>`;
 }
@@ -305,7 +541,8 @@ export default function ResumePage() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [lang, setLang] = useState('latex'); // 'latex' | 'html' | 'auto'
-  const [code, setCode] = useState(SAMPLE_LATEX_CODE);
+  const [code, setCode] = useState(FAKE_SAMPLE_LATEX_TEMPLATE);
+  const [activeTemplateName, setActiveTemplateName] = useState('fake_sample');
   const [toast, setToast] = useState(null);
 
   useEffect(() => {
@@ -338,7 +575,7 @@ export default function ResumePage() {
 \\pagenumbering{gobble}
 
 \\begin{center}
-    {\\Huge \\textbf{${user?.full_name || portfolio?.hero_title || user?.username}}} \\\\[4pt]
+    {\\Huge \\textbf{${user?.full_name || portfolio?.hero_title || user?.username || 'Your Name'}}} \\\\[4pt]
     \\small ${user?.email || ''} \\ $|$ \\ ${portfolio?.phone || ''} \\ $|$ \\ \\href{${portfolio?.linkedin || '#'}}{LinkedIn} \\ $|$ \\ \\href{${portfolio?.github || '#'}}{GitHub}
 \\end{center}
 
@@ -352,7 +589,7 @@ ${education.map(ed => `  \\item \\textbf{${ed.degree}${ed.field ? ' in ' + ed.fi
 \\end{itemize}` : ''}
 
 ${projects.length > 0 ? `\\section{Projects}
-${projects.map(p => `\\textbf{${p.title}} \\hfill \\href{${p.github_url || p.live_url || '#'}}{[Link]}
+${projects.map(p => `\\textbf{${p.title}} \\hfill \\href{${p.github_url || p.live_url || '#'}}{[GitHub]}
 \\begin{itemize}
   \\item ${p.short_description || p.description || ''}
   ${Array.isArray(p.tech_stack) && p.tech_stack.length > 0 ? `\\item \\textbf{Tech Stack:} ${p.tech_stack.join(', ')}` : ''}
@@ -409,23 +646,27 @@ ${skills.length > 0 ? `\\section{Skills}
     showToast('Code copied to clipboard!');
   };
 
-  const handleResetSample = () => {
-    if (confirm('Reset code editor to sample template?')) {
-      if (lang === 'latex') {
-        setCode(SAMPLE_LATEX_CODE);
-      } else {
-        setCode(SAMPLE_HTML_CODE);
-      }
-      showToast('Reset to sample template!');
+  const handleSelectTemplate = (templateKey) => {
+    setActiveTemplateName(templateKey);
+    if (templateKey === 'fake_sample') {
+      setCode(FAKE_SAMPLE_LATEX_TEMPLATE);
+      setLang('latex');
+      showToast('Loaded Aarav Sharma (ATS Resume Template)!');
+    } else if (templateKey === 'html') {
+      setCode(SAMPLE_HTML_CODE);
+      setLang('html');
+      showToast('Loaded Classic HTML / CSS Template!');
     }
   };
 
   const switchLanguage = (newLang) => {
     setLang(newLang);
     if (newLang === 'latex') {
-      setCode(SAMPLE_LATEX_CODE);
+      setCode(FAKE_SAMPLE_LATEX_TEMPLATE);
+      setActiveTemplateName('fake_sample');
     } else if (newLang === 'html') {
       setCode(SAMPLE_HTML_CODE);
+      setActiveTemplateName('html');
     }
   };
 
@@ -469,49 +710,92 @@ ${skills.length > 0 ? `\\section{Skills}
         </div>
       </div>
 
-      {/* Language / Mode Switcher Tabs */}
+      {/* Template Selector & Presets Bar */}
       <div style={{
-        display: 'flex', gap: '0.75rem', marginBottom: '1.5rem',
-        background: 'var(--color-bg-secondary)', padding: '6px',
+        background: 'var(--color-bg-secondary)', padding: '1rem 1.25rem',
         borderRadius: 'var(--radius-lg)', border: '1px solid var(--color-border)',
-        maxWidth: '600px',
+        marginBottom: '1.25rem', display: 'flex', justifyContent: 'space-between',
+        alignItems: 'center', flexWrap: 'wrap', gap: '1rem',
       }}>
-        <button
-          onClick={() => switchLanguage('latex')}
-          style={{
-            flex: 1, padding: '0.625rem 1rem', borderRadius: 'var(--radius-md)',
-            fontWeight: 600, fontSize: '0.9rem', cursor: 'pointer', border: 'none',
-            background: lang === 'latex' ? 'var(--color-primary)' : 'transparent',
-            color: lang === 'latex' ? '#fff' : 'var(--color-text-muted)',
-            transition: 'all 0.2s',
-          }}
-        >
-          📄 LaTeX Code (.tex)
-        </button>
-        <button
-          onClick={() => switchLanguage('html')}
-          style={{
-            flex: 1, padding: '0.625rem 1rem', borderRadius: 'var(--radius-md)',
-            fontWeight: 600, fontSize: '0.9rem', cursor: 'pointer', border: 'none',
-            background: lang === 'html' ? 'var(--color-primary)' : 'transparent',
-            color: lang === 'html' ? '#fff' : 'var(--color-text-muted)',
-            transition: 'all 0.2s',
-          }}
-        >
-          🌐 HTML / CSS (.html)
-        </button>
-        <button
-          onClick={() => switchLanguage('auto')}
-          style={{
-            flex: 1, padding: '0.625rem 1rem', borderRadius: 'var(--radius-md)',
-            fontWeight: 600, fontSize: '0.9rem', cursor: 'pointer', border: 'none',
-            background: lang === 'auto' ? 'var(--color-primary)' : 'transparent',
-            color: lang === 'auto' ? '#fff' : 'var(--color-text-muted)',
-            transition: 'all 0.2s',
-          }}
-        >
-          📊 Auto-Sync DB
-        </button>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
+          <span style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--color-text-secondary)' }}>
+            📑 Resume Presets:
+          </span>
+          <button
+            onClick={() => handleSelectTemplate('fake_sample')}
+            className="btn btn-sm"
+            style={{
+              background: activeTemplateName === 'fake_sample' && lang === 'latex' ? 'var(--color-primary)' : 'rgba(255,255,255,0.05)',
+              color: activeTemplateName === 'fake_sample' && lang === 'latex' ? '#fff' : 'var(--color-text)',
+              border: '1px solid var(--color-border)',
+              fontWeight: 600,
+            }}
+          >
+            🌟 Aarav Sharma (Featured AI Sample)
+          </button>
+          <button
+            onClick={() => handleSelectTemplate('sanchit')}
+            className="btn btn-sm"
+            style={{
+              background: activeTemplateName === 'sanchit' && lang === 'latex' ? 'var(--color-primary)' : 'rgba(255,255,255,0.05)',
+              color: activeTemplateName === 'sanchit' && lang === 'latex' ? '#fff' : 'var(--color-text)',
+              border: '1px solid var(--color-border)',
+            }}
+          >
+            🤖 Sanchit Thakur (AI & Data Science)
+          </button>
+          <button
+            onClick={() => handleSelectTemplate('alex')}
+            className="btn btn-sm"
+            style={{
+              background: activeTemplateName === 'alex' && lang === 'latex' ? 'var(--color-primary)' : 'rgba(255,255,255,0.05)',
+              color: activeTemplateName === 'alex' && lang === 'latex' ? '#fff' : 'var(--color-text)',
+              border: '1px solid var(--color-border)',
+            }}
+          >
+            💻 Alex Rivera (Full-Stack Cloud)
+          </button>
+        </div>
+
+        {/* Language / Mode Switcher Tabs */}
+        <div style={{
+          display: 'flex', gap: '4px', background: 'rgba(0,0,0,0.25)',
+          padding: '4px', borderRadius: 'var(--radius-md)',
+        }}>
+          <button
+            onClick={() => switchLanguage('latex')}
+            style={{
+              padding: '0.4rem 0.85rem', borderRadius: '6px',
+              fontWeight: 600, fontSize: '0.8rem', cursor: 'pointer', border: 'none',
+              background: lang === 'latex' ? 'var(--color-primary)' : 'transparent',
+              color: lang === 'latex' ? '#fff' : 'var(--color-text-muted)',
+            }}
+          >
+            📄 LaTeX
+          </button>
+          <button
+            onClick={() => switchLanguage('html')}
+            style={{
+              padding: '0.4rem 0.85rem', borderRadius: '6px',
+              fontWeight: 600, fontSize: '0.8rem', cursor: 'pointer', border: 'none',
+              background: lang === 'html' ? 'var(--color-primary)' : 'transparent',
+              color: lang === 'html' ? '#fff' : 'var(--color-text-muted)',
+            }}
+          >
+            🌐 HTML
+          </button>
+          <button
+            onClick={() => switchLanguage('auto')}
+            style={{
+              padding: '0.4rem 0.85rem', borderRadius: '6px',
+              fontWeight: 600, fontSize: '0.8rem', cursor: 'pointer', border: 'none',
+              background: lang === 'auto' ? 'var(--color-primary)' : 'transparent',
+              color: lang === 'auto' ? '#fff' : 'var(--color-text-muted)',
+            }}
+          >
+            📊 Auto-Sync DB
+          </button>
+        </div>
       </div>
 
       {/* Editor & Live Preview Split Container */}
@@ -519,22 +803,19 @@ ${skills.length > 0 ? `\\section{Skills}
         <div>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
             <span style={{ fontSize: '0.85rem', color: 'var(--color-text-secondary)', fontWeight: 600 }}>
-              💡 Edit the {lang === 'latex' ? 'LaTeX (\\documentclass...)' : 'HTML/CSS'} code on the left — the preview compiles live on the right!
+              💡 Edit the {lang === 'latex' ? 'LaTeX code' : 'HTML/CSS code'} on the left — the preview compiles live on the right!
             </span>
-            <button onClick={handleResetSample} className="btn btn-ghost" style={{ fontSize: '0.8rem', padding: '0.25rem 0.625rem' }}>
-              🔄 Reset to Sample Code
-            </button>
           </div>
 
           <div className="editor-preview-split" style={{
             display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem',
-            alignItems: 'start', minHeight: '650px',
+            alignItems: 'start', minHeight: '680px',
           }}>
             {/* Left: Code Editor */}
             <div style={{
               background: '#0d1117', border: '1px solid var(--color-border)',
               borderRadius: 'var(--radius-xl)', overflow: 'hidden',
-              display: 'flex', flexDirection: 'column', height: '700px',
+              display: 'flex', flexDirection: 'column', height: '760px',
             }}>
               <div style={{
                 padding: '0.75rem 1.25rem', background: '#161b22',
@@ -542,10 +823,10 @@ ${skills.length > 0 ? `\\section{Skills}
                 display: 'flex', justifyContent: 'space-between', alignItems: 'center',
               }}>
                 <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8rem', color: '#8b949e', fontWeight: 600 }}>
-                  {lang === 'latex' ? '📄 resume-template.tex' : '📄 resume-template.html'}
+                  {lang === 'latex' ? '📄 resume.tex' : '📄 resume.html'}
                 </span>
                 <span style={{ fontSize: '0.75rem', color: '#58a6ff', fontWeight: 600 }}>
-                  {lang === 'latex' ? 'LaTeX Code' : 'HTML / CSS'}
+                  {lang === 'latex' ? 'LaTeX Editor' : 'HTML / CSS Editor'}
                 </span>
               </div>
               <textarea
@@ -565,7 +846,7 @@ ${skills.length > 0 ? `\\section{Skills}
             <div style={{
               background: '#ffffff', border: '1px solid var(--color-border)',
               borderRadius: 'var(--radius-xl)', overflow: 'hidden',
-              height: '700px', display: 'flex', flexDirection: 'column',
+              height: '760px', display: 'flex', flexDirection: 'column',
               boxShadow: '0 10px 30px rgba(0,0,0,0.3)',
             }}>
               <div style={{
@@ -574,10 +855,10 @@ ${skills.length > 0 ? `\\section{Skills}
                 display: 'flex', justifyContent: 'space-between', alignItems: 'center',
               }}>
                 <span style={{ fontSize: '0.8rem', fontWeight: 700, color: '#334155' }}>
-                  👁️ Compiled Live Resume Preview
+                  👁️ Live ATS Resume Preview
                 </span>
                 <span style={{ fontSize: '0.75rem', color: '#10b981', fontWeight: 600 }}>
-                  ✓ LaTeX / ATS Render Engine Active
+                  ✓ Live Engine Active
                 </span>
               </div>
               <iframe
@@ -610,7 +891,7 @@ ${skills.length > 0 ? `\\section{Skills}
           <iframe
             srcDoc={activePreviewHtml}
             title="Auto Resume Preview"
-            style={{ width: '100%', height: '700px', border: 'none', background: '#fff' }}
+            style={{ width: '100%', height: '760px', border: 'none', background: '#fff' }}
           />
         </div>
       )}
