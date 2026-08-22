@@ -31,59 +31,56 @@ const SAMPLE_LATEX_CODE = `\\documentclass[10pt,letterpaper]{article}
 % Header
 \\begin{center}
     {\\Huge \\textbf{Alex Rivera}} \\\\[4pt]
-    \\small alex.rivera@example.com \\ $|$ \\ +1 (555) 234-5678 \\ $|$ \\ \\href{https://linkedin.com}{LinkedIn} \\ $|$ \\ \\href{https://github.com}{GitHub} \\ $|$ \\ \\href{https://example.com}{Portfolio}
+    \\small alex.rivera@example.com \\ $|$ \\ +1 (555) 019-2834 \\ $|$ \\ \\href{https://linkedin.com}{LinkedIn} \\ $|$ \\ \\href{https://github.com}{GitHub} \\ $|$ \\ \\href{https://example.com}{Portfolio}
 \\end{center}
 
 % Profile summary
 \\section{Profile summary}
-Entry-Level \\textbf{Data Scientist \\& AI Engineer} with strong foundations in Machine Learning, Natural Language Processing (NLP), and full-stack AI system integration. Experienced in developing end-to-end data pipelines using \\textbf{Python}, vector databases, and modern Large Language Model (LLM) architectures. Demonstrated capabilities in predictive analytics, audio-to-text processing, and exploratory data analysis. Passionate about solving complex business problems through statistical modeling and quantitative analysis.
+Versatile \\textbf{Full-Stack Software Engineer} with a strong foundation in designing scalable web applications, distributed backend services, and interactive user interfaces. Experienced in modern \\textbf{JavaScript/TypeScript} and \\textbf{Python} ecosystems, cloud infrastructure, and RESTful API architecture. Passionate about writing clean, maintainable code and solving complex technical challenges.
 
 % Education
 \\section{Education}
 \\begin{itemize}
-  \\item \\textbf{Bachelor of Technology in AI \\& Data Science} \\hfill 2024 -- 2028 \\\\
-  \\textit{Institute of Technology \\& Science} \\\\
-  CGPA: \\textbf{8.2}
-  \\item \\textbf{Senior Secondary Education (Class 12th)} \\hfill 2022 \\\\
-  Percentage: \\textbf{78.0\\%}
-  \\item \\textbf{Secondary School Education (Class 10th)} \\hfill 2020 \\\\
-  Percentage: \\textbf{82.5\\%}
+  \\item \\textbf{Bachelor of Science in Computer Science} \\hfill 2020 -- 2024 \\\\
+  \\textit{State University of Technology} \\\\
+  Cumulative GPA: \\textbf{3.85 / 4.00}
+  \\item \\textbf{High School Diploma} \\hfill 2020 \\\\
+  Academic Honors & STEM Focus
 \\end{itemize}
 
 % Projects
 \\section{Projects}
 
-\\textbf{Type-To-Write: AI Knowledge Retrieval System} \\hfill \\href{https://github.com}{[GitHub]}
+\\textbf{CloudScale: Distributed Task Scheduling Engine} \\hfill \\href{https://github.com}{[GitHub]}
 \\begin{itemize}
-  \\item Built a RAG-based platform leveraging \\textbf{LangChain} and \\textbf{OpenAI GPT models} to convert educational video content into searchable notes.
-  \\item Integrated \\textbf{OpenAI Whisper} for audio transcription, achieving high accuracy in transcript generation across noisy inputs.
-  \\item Implemented \\textbf{Vector Embeddings} and semantic search indexing, reducing search query latency by \\textbf{40\\%}.
-  \\item \\textbf{Tech Stack:} Python, Whisper, Vector DB, LangChain, Next.js, FastAPI
+  \\item Designed and implemented a fault-tolerant distributed job scheduler capable of handling \\textbf{10,000+ concurrent tasks} across asynchronous worker nodes.
+  \\item Integrated \\textbf{Redis} for low-latency pub/sub queues and in-memory state tracking, reducing task delay by \\textbf{45\\%}.
+  \\item Implemented automated container orchestration and health checks with comprehensive unit and integration testing.
+  \\item \\textbf{Tech Stack:} TypeScript, Node.js, Express, Redis, PostgreSQL, Docker
 \\end{itemize}
 
-\\textbf{CineVerse: Movie Discovery \\& Recommendation Engine} \\hfill \\href{https://github.com}{[GitHub]}
+\\textbf{PulseFlow: Real-Time Collaborative Canvas} \\hfill \\href{https://github.com}{[GitHub]}
 \\begin{itemize}
-  \\item Built an AI-driven movie recommendation engine using \\textbf{Content-Based Filtering}, \\textbf{TF-IDF Vectorization}, and \\textbf{Cosine Similarity} for personalized content matching.
-  \\item Performed \\textbf{NLP \\& Sentiment Analysis} on metadata and user reviews across \\textbf{5,000+ movie titles} to compute weighted sentiment scores and popularity metrics.
-  \\item Integrated \\textbf{TMDB API} endpoints with optimized data pipelines and client-side caching, improving recommendation retrieval speed by \\textbf{35\\%}.
-  \\item \\textbf{Tech Stack:} HTML5, CSS3, JavaScript, React.js, TMDB API
+  \\item Engineered a web-based collaborative workspace supporting simultaneous multi-user drawing, live cursors, and instant vector synchronization via \\textbf{WebSockets}.
+  \\item Optimized canvas rendering pipeline to maintain a consistent \\textbf{60 FPS} across complex multi-layered diagrams.
+  \\item Built modular state management with undo/redo capabilities and local storage snapshot caching.
+  \\item \\textbf{Tech Stack:} React, TypeScript, HTML5 Canvas, WebSockets, Tailwind CSS
 \\end{itemize}
 
-\\textbf{Interactive Sales Analytics \\& Profitability Dashboard} \\hfill \\href{https://github.com}{[GitHub]}
+\\textbf{AuraMetrics: Application Telemetry \\& Observability Dashboard} \\hfill \\href{https://github.com}{[GitHub]}
 \\begin{itemize}
-  \\item Engineered an end-to-end Data Science dashboard to evaluate corporate sales streams and classify financial performance into \\textbf{profit vs. loss trajectories}.
-  \\item Built modular REST APIs using \\textbf{FastAPI} and \\textbf{Uvicorn} for real-time KPI calculations, transaction processing, live simulation engines, and automated CSV report generation.
-  \\item Implemented database architecture using \\textbf{MySQL} schema and \\textbf{SQLAlchemy ORM} models with zero-friction fallback to SQLite for rapid local testing.
-  \\item Designed multi-dimensional visual graphs (line, bar, doughnut charts) using \\textbf{Chart.js}, \\textbf{Plotly.js}, and \\textbf{Tailwind CSS}, optimizing inventory distribution by \\textbf{18\\%}.
-  \\item \\textbf{Tech Stack:} Python, FastAPI, Uvicorn, MySQL, SQLAlchemy, HTML5, Tailwind CSS, Chart.js, Plotly.js, Pandas, NumPy
+  \\item Developed a lightweight monitoring system to track server response times, HTTP status distributions, and error log frequencies in real time.
+  \\item Built high-performance async REST API endpoints using \\textbf{FastAPI} to aggregate and stream timeseries performance metrics.
+  \\item Designed interactive visualization graphs and configurable threshold notification alerts.
+  \\item \\textbf{Tech Stack:} Python, FastAPI, React, Chart.js, Docker, SQLite
 \\end{itemize}
 
 % Skills
 \\section{Skills}
 \\begin{itemize}
-  \\item \\textbf{Data Science \\& Machine Learning:} Data Cleaning, EDA, Feature Engineering, Statistical Analysis, Predictive Modeling, Scikit-learn, PyTorch, Pandas, NumPy, Matplotlib.
-  \\item \\textbf{AI \\& LLMs:} OpenAI API (GPT-4), Whisper, RAG Pipelines, Vector Embeddings, LangChain, Prompt Engineering.
-  \\item \\textbf{Programming Languages:} Python, SQL, C++, Java, C, HTML, CSS.
+  \\item \\textbf{Frontend Engineering:} React, Next.js, TypeScript, JavaScript (ES6+), HTML5, CSS3, Tailwind CSS.
+  \\item \\textbf{Backend \\& Database:} Node.js, Express, Python, FastAPI, PostgreSQL, MongoDB, Redis, REST APIs.
+  \\item \\textbf{Developer Tools \\& DevOps:} Git, GitHub Actions, Docker, CI/CD Pipelines, Linux, Jest.
 \\end{itemize}
 
 \\end{document}`;
@@ -145,7 +142,7 @@ const SAMPLE_HTML_CODE = `<!DOCTYPE html>
     <div class="contact-line">
       <a href="mailto:alex.rivera@example.com">alex.rivera@example.com</a>
       <span class="contact-sep">|</span>
-      <span>+1 (555) 234-5678</span>
+      <span>+1 (555) 019-2834</span>
       <span class="contact-sep">|</span>
       <a href="https://linkedin.com">LinkedIn</a>
       <span class="contact-sep">|</span>
@@ -158,7 +155,7 @@ const SAMPLE_HTML_CODE = `<!DOCTYPE html>
   <h2 class="section-title">Profile summary</h2>
   <div class="divider"></div>
   <p class="summary">
-    Entry-Level <strong>Data Scientist & AI Engineer</strong> with strong foundations in Machine Learning, Natural Language Processing (NLP), and full-stack AI system integration. Experienced in developing end-to-end data pipelines using <strong>Python</strong>, vector databases, and modern Large Language Model (LLM) architectures.
+    Versatile <strong>Full-Stack Software Engineer</strong> with a strong foundation in designing scalable web applications, distributed backend services, and interactive user interfaces. Experienced in modern <strong>JavaScript/TypeScript</strong> and <strong>Python</strong> ecosystems, cloud infrastructure, and RESTful API architecture.
   </p>
 
   <h2 class="section-title">Education</h2>
@@ -166,11 +163,11 @@ const SAMPLE_HTML_CODE = `<!DOCTYPE html>
   <ul class="item-list" style="list-style-type: disc;">
     <li>
       <div class="item-header">
-        <span class="item-title">Bachelor of Technology in AI & Data Science</span>
-        <span class="item-date">2024–2028</span>
+        <span class="item-title">Bachelor of Science in Computer Science</span>
+        <span class="item-date">2020–2024</span>
       </div>
-      <div class="item-sub">Institute of Technology & Science</div>
-      <div>CGPA: <strong>8.2</strong></div>
+      <div class="item-sub">State University of Technology</div>
+      <div>Cumulative GPA: <strong>3.85 / 4.00</strong></div>
     </li>
   </ul>
 
@@ -178,20 +175,32 @@ const SAMPLE_HTML_CODE = `<!DOCTYPE html>
   <div class="divider"></div>
   <div class="project-item">
     <div class="project-header">
-      <span class="project-title">Type-To-Write: AI Knowledge Retrieval System</span>
+      <span class="project-title">CloudScale: Distributed Task Scheduling Engine</span>
       <a href="https://github.com" class="project-link">[GitHub]</a>
     </div>
     <ul class="item-list" style="list-style-type: disc;">
-      <li>Built a RAG-based platform leveraging <strong>LangChain</strong> and <strong>OpenAI GPT models</strong>.</li>
-      <li><strong>Tech Stack:</strong> Python, Whisper, Vector DB, LangChain, Next.js, FastAPI</li>
+      <li>Designed and implemented a fault-tolerant distributed job scheduler capable of handling <strong>10,000+ concurrent tasks</strong> across asynchronous worker nodes.</li>
+      <li><strong>Tech Stack:</strong> TypeScript, Node.js, Express, Redis, PostgreSQL, Docker</li>
+    </ul>
+  </div>
+
+  <div class="project-item">
+    <div class="project-header">
+      <span class="project-title">PulseFlow: Real-Time Collaborative Canvas</span>
+      <a href="https://github.com" class="project-link">[GitHub]</a>
+    </div>
+    <ul class="item-list" style="list-style-type: disc;">
+      <li>Engineered a web-based collaborative workspace supporting simultaneous multi-user drawing, live cursors, and instant vector synchronization via <strong>WebSockets</strong>.</li>
+      <li><strong>Tech Stack:</strong> React, TypeScript, HTML5 Canvas, WebSockets, Tailwind CSS</li>
     </ul>
   </div>
 
   <h2 class="section-title">Skills</h2>
   <div class="divider"></div>
   <ul class="skills-list" style="list-style-type: disc;">
-    <li><span class="skill-cat">Data Science & Machine Learning:</span> PyTorch, Pandas, NumPy, Scikit-learn.</li>
-    <li><span class="skill-cat">Programming Languages:</span> Python, SQL, C++, Java, HTML, CSS.</li>
+    <li><span class="skill-cat">Frontend Engineering:</span> React, Next.js, TypeScript, JavaScript, HTML5, CSS3, Tailwind CSS.</li>
+    <li><span class="skill-cat">Backend & Cloud:</span> Node.js, Express, Python, FastAPI, PostgreSQL, MongoDB, Redis, Docker.</li>
+    <li><span class="skill-cat">Developer Tools:</span> Git, GitHub Actions, CI/CD, Linux, Jest.</li>
   </ul>
 </body>
 </html>`;
