@@ -131,13 +131,13 @@ export default function DashboardLayout({ children }) {
           background: var(--color-bg);
         }
         
-        /* ── Improved Sidebar ──────────────── */
+        /* ── Improved Glass Sidebar ──────────────── */
         .sidebar {
           width: 280px;
-          background: rgba(18, 18, 28, 0.85);
-          backdrop-filter: blur(20px);
-          -webkit-backdrop-filter: blur(20px);
-          border-right: 1px solid var(--color-border);
+          background: rgba(14, 14, 24, 0.75);
+          backdrop-filter: blur(28px) saturate(190%);
+          -webkit-backdrop-filter: blur(28px) saturate(190%);
+          border-right: 1px solid rgba(255, 255, 255, 0.09);
           display: flex;
           flex-direction: column;
           position: fixed;
@@ -145,12 +145,13 @@ export default function DashboardLayout({ children }) {
           bottom: 0;
           left: 0;
           z-index: 100;
+          box-shadow: 10px 0 30px rgba(0, 0, 0, 0.45);
           transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
         
         .sidebar-header {
           padding: 1.75rem 1.5rem;
-          border-bottom: 1px solid var(--color-border);
+          border-bottom: 1px solid rgba(255, 255, 255, 0.08);
         }
         
         .sidebar-brand {
@@ -184,7 +185,7 @@ export default function DashboardLayout({ children }) {
         }
         
         :global(.sidebar-link:hover) {
-          background: rgba(255, 255, 255, 0.04);
+          background: rgba(255, 255, 255, 0.06);
           color: var(--color-text);
           padding-left: 1.25rem;
         }
@@ -192,7 +193,7 @@ export default function DashboardLayout({ children }) {
         :global(.sidebar-link.active) {
           background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
           color: #ffffff;
-          box-shadow: 0 4px 20px var(--color-primary-glow);
+          box-shadow: 0 4px 20px var(--color-primary-glow), inset 0 1px 0 rgba(255,255,255,0.25);
           font-weight: 600;
         }
 
@@ -201,7 +202,7 @@ export default function DashboardLayout({ children }) {
           width: 32px;
           height: 32px;
           border-radius: 8px;
-          background: rgba(255, 255, 255, 0.05);
+          background: rgba(255, 255, 255, 0.06);
           display: flex;
           align-items: center;
           justify-content: center;
@@ -210,7 +211,7 @@ export default function DashboardLayout({ children }) {
         }
         
         .sidebar-icon-container.active {
-          background: rgba(255, 255, 255, 0.2);
+          background: rgba(255, 255, 255, 0.25);
         }
         
         :global(.sidebar-link:hover) .sidebar-icon-container {
@@ -225,16 +226,18 @@ export default function DashboardLayout({ children }) {
           width: 4px;
           background: #ffffff;
           border-radius: 0 4px 4px 0;
+          box-shadow: 0 0 10px #ffffff;
         }
         
         /* ── Sidebar Footer ────────────────── */
         .sidebar-footer {
           padding: 1.25rem;
-          border-top: 1px solid var(--color-border);
+          border-top: 1px solid rgba(255, 255, 255, 0.08);
           display: flex;
           flex-direction: column;
           gap: 1rem;
-          background: rgba(0, 0, 0, 0.15);
+          background: rgba(0, 0, 0, 0.25);
+          backdrop-filter: blur(10px);
         }
         
         /* ── Live Portfolio Button ─────────── */
@@ -245,17 +248,18 @@ export default function DashboardLayout({ children }) {
           padding: 0.875rem 1rem;
           border-radius: var(--radius-lg);
           color: #ffffff;
-          background: linear-gradient(135deg, rgba(108, 99, 255, 0.15), rgba(168, 85, 247, 0.15));
-          border: 1px solid rgba(108, 99, 255, 0.3);
+          background: linear-gradient(135deg, rgba(108, 99, 255, 0.18), rgba(168, 85, 247, 0.18));
+          border: 1px solid rgba(108, 99, 255, 0.35);
+          box-shadow: inset 0 1px 0 rgba(255,255,255,0.15);
           transition: all 0.3s;
           cursor: pointer;
         }
         
         :global(.sidebar-portfolio-link:hover) {
-          background: linear-gradient(135deg, rgba(108, 99, 255, 0.25), rgba(168, 85, 247, 0.25));
-          border-color: rgba(108, 99, 255, 0.5);
+          background: linear-gradient(135deg, rgba(108, 99, 255, 0.28), rgba(168, 85, 247, 0.28));
+          border-color: rgba(108, 99, 255, 0.6);
           transform: translateY(-2px);
-          box-shadow: 0 4px 15px rgba(108, 99, 255, 0.2);
+          box-shadow: 0 6px 20px rgba(108, 99, 255, 0.3), inset 0 1px 0 rgba(255,255,255,0.25);
         }
         
         .portfolio-link-icon {
@@ -300,9 +304,11 @@ export default function DashboardLayout({ children }) {
           align-items: center;
           gap: 0.75rem;
           padding: 0.75rem;
-          background: rgba(255, 255, 255, 0.03);
-          border: 1px solid var(--color-border);
+          background: rgba(255, 255, 255, 0.04);
+          border: 1px solid rgba(255, 255, 255, 0.1);
           border-radius: var(--radius-lg);
+          backdrop-filter: blur(10px);
+          box-shadow: inset 0 1px 0 rgba(255,255,255,0.1);
         }
         
         .sidebar-avatar {
@@ -316,7 +322,7 @@ export default function DashboardLayout({ children }) {
           justify-content: center;
           font-weight: 700;
           font-size: 0.85rem;
-          box-shadow: 0 2px 8px rgba(108, 99, 255, 0.3);
+          box-shadow: 0 2px 8px rgba(108, 99, 255, 0.4);
           flex-shrink: 0;
         }
         
@@ -361,10 +367,10 @@ export default function DashboardLayout({ children }) {
         .sidebar-overlay {
           position: fixed;
           inset: 0;
-          background: rgba(0,0,0,0.6);
+          background: rgba(0,0,0,0.7);
           z-index: 99;
           display: none;
-          backdrop-filter: blur(4px);
+          backdrop-filter: blur(8px);
         }
         
         /* ── Main Layout Elements ──────────── */
@@ -380,8 +386,10 @@ export default function DashboardLayout({ children }) {
           align-items: center;
           justify-content: space-between;
           padding: 1.25rem 2rem;
-          border-bottom: 1px solid var(--color-border);
-          background: var(--color-bg);
+          border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+          background: rgba(10, 10, 18, 0.75);
+          backdrop-filter: blur(24px);
+          -webkit-backdrop-filter: blur(24px);
           position: sticky;
           top: 0;
           z-index: 50;
@@ -397,13 +405,15 @@ export default function DashboardLayout({ children }) {
           display: flex;
           align-items: center;
           gap: 0.5rem;
-          background: rgba(16, 185, 129, 0.1);
+          background: rgba(16, 185, 129, 0.12);
           color: #10B981;
           font-size: 0.75rem;
           font-weight: 600;
-          padding: 0.375rem 0.75rem;
+          padding: 0.375rem 0.85rem;
           border-radius: var(--radius-full);
-          border: 1px solid rgba(16, 185, 129, 0.2);
+          border: 1px solid rgba(16, 185, 129, 0.25);
+          backdrop-filter: blur(10px);
+          box-shadow: 0 0 12px rgba(16, 185, 129, 0.15);
         }
         
         .status-dot {

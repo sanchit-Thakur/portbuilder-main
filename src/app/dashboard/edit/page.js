@@ -209,27 +209,32 @@ export default function EditPortfolio() {
         }
         .editor-tabs {
           display: flex;
-          gap: 0.25rem;
+          gap: 0.35rem;
           overflow-x: auto;
-          padding-bottom: 0.5rem;
+          padding: 0.35rem;
           margin-bottom: 1.5rem;
-          border-bottom: 1px solid var(--color-border);
+          background: rgba(255, 255, 255, 0.03);
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          border-radius: var(--radius-lg);
+          backdrop-filter: blur(12px);
         }
         .editor-tab {
-          padding: 0.625rem 1rem;
+          padding: 0.625rem 1.1rem;
           font-size: var(--text-sm);
           font-weight: 500;
           color: var(--color-text-muted);
-          border-radius: var(--radius-md) var(--radius-md) 0 0;
+          border-radius: var(--radius-md);
           white-space: nowrap;
-          transition: all 0.2s;
-          border-bottom: 2px solid transparent;
+          transition: all 0.25s;
+          border: 1px solid transparent;
         }
-        .editor-tab:hover { color: var(--color-text); background: var(--color-surface); }
+        .editor-tab:hover { color: var(--color-text); background: rgba(255, 255, 255, 0.06); }
         .editor-tab.active {
-          color: var(--color-primary-light);
-          border-bottom-color: var(--color-primary);
-          background: rgba(108, 99, 255, 0.06);
+          color: #ffffff;
+          background: linear-gradient(135deg, rgba(108, 99, 255, 0.3), rgba(168, 85, 247, 0.25));
+          border-color: rgba(108, 99, 255, 0.4);
+          box-shadow: 0 4px 15px rgba(108, 99, 255, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+          font-weight: 600;
         }
         .editor-main-container {
           display: grid;
@@ -243,24 +248,25 @@ export default function EditPortfolio() {
         }
         .editor-content { padding: 2rem; }
         .editor-live-preview-panel {
-          border: 1px solid var(--color-border);
+          border: 1px solid rgba(255, 255, 255, 0.12);
           border-radius: var(--radius-xl);
           overflow: hidden;
-          background: var(--color-surface);
+          background: rgba(18, 18, 30, 0.75);
+          backdrop-filter: blur(20px);
           display: flex;
           flex-direction: column;
           height: calc(100vh - 220px);
           position: sticky;
           top: 100px;
-          box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+          box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.15);
         }
         .preview-chrome-header {
           display: flex;
           align-items: center;
           gap: 1rem;
           padding: 0.75rem 1rem;
-          background: var(--color-bg-tertiary);
-          border-bottom: 1px solid var(--color-border);
+          background: rgba(255, 255, 255, 0.03);
+          border-bottom: 1px solid rgba(255, 255, 255, 0.08);
         }
         .chrome-dots { display: flex; gap: 6px; }
         .chrome-dots .dot { width: 10px; height: 10px; border-radius: 50%; display: block; }
@@ -269,7 +275,8 @@ export default function EditPortfolio() {
         .dot.green { background: #28c840; }
         .chrome-url {
           flex: 1; textAlign: center; font-size: 0.75rem;
-          color: var(--color-text-muted); background: var(--color-surface);
+          color: var(--color-text-muted); background: rgba(255, 255, 255, 0.05);
+          border: 1px solid rgba(255, 255, 255, 0.08);
           padding: 3px 12px; border-radius: 6px; font-weight: 500;
         }
         .preview-scroll-area {

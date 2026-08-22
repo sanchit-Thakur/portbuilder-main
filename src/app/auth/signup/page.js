@@ -128,28 +128,31 @@ function SignupForm() {
         .auth-orb {
           position: absolute;
           border-radius: 50%;
-          filter: blur(100px);
+          filter: blur(90px);
           animation: float 8s ease-in-out infinite;
+          pointer-events: none;
         }
         .auth-orb-1 {
-          width: 400px; height: 400px;
-          background: rgba(108, 99, 255, 0.15);
-          top: -100px; left: -100px;
+          width: 450px; height: 450px;
+          background: radial-gradient(circle, rgba(108, 99, 255, 0.3) 0%, rgba(108, 99, 255, 0) 70%);
+          top: -120px; left: -120px;
         }
         .auth-orb-2 {
-          width: 350px; height: 350px;
-          background: rgba(168, 85, 247, 0.1);
-          bottom: -100px; right: -100px;
+          width: 400px; height: 400px;
+          background: radial-gradient(circle, rgba(168, 85, 247, 0.25) 0%, rgba(168, 85, 247, 0) 70%);
+          bottom: -120px; right: -120px;
           animation-delay: -4s;
         }
         .auth-container {
-          background: var(--color-bg-secondary);
-          border: 1px solid var(--color-border);
+          background: rgba(18, 18, 32, 0.72);
+          backdrop-filter: blur(28px) saturate(190%);
+          -webkit-backdrop-filter: blur(28px) saturate(190%);
+          border: 1px solid rgba(255, 255, 255, 0.14);
           border-radius: var(--radius-2xl);
           padding: 3rem;
           width: 100%;
           max-width: 440px;
-          box-shadow: var(--shadow-xl);
+          box-shadow: 0 30px 70px -15px rgba(0, 0, 0, 0.7), 0 0 40px rgba(108, 99, 255, 0.12), inset 0 1px 1px rgba(255, 255, 255, 0.25);
           position: relative;
           z-index: 2;
         }
@@ -166,13 +169,14 @@ function SignupForm() {
           margin-top: 2rem;
         }
         .auth-error {
-          background: rgba(239, 68, 68, 0.1);
-          border: 1px solid rgba(239, 68, 68, 0.3);
+          background: rgba(239, 68, 68, 0.15);
+          border: 1px solid rgba(239, 68, 68, 0.35);
           color: #f87171;
           padding: 0.75rem 1rem;
           border-radius: var(--radius-md);
           font-size: var(--text-sm);
           margin-top: 1rem;
+          backdrop-filter: blur(8px);
         }
       `}</style>
     </div>

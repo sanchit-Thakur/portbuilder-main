@@ -33,17 +33,25 @@ export default function PortfolioRenderer({ data }) {
       color: t.text,
       minHeight: '100vh',
     }}>
-      {/* Glassmorphism gradient background */}
+      {/* Glassmorphism gradient background with glowing ambient orbs */}
       {portfolio?.theme === 'glassmorphism-modern' && (
-        <div style={{
-          position: 'fixed', inset: 0, zIndex: 0,
-          background: `
-            radial-gradient(ellipse at 20% 50%, ${accentColor}25 0%, transparent 50%),
-            radial-gradient(ellipse at 80% 20%, #764ba233 0%, transparent 50%),
-            radial-gradient(ellipse at 50% 100%, #ec489922 0%, transparent 50%),
-            ${t.background}
-          `,
-        }} />
+        <div style={{ position: 'fixed', inset: 0, zIndex: 0, overflow: 'hidden', pointerEvents: 'none' }}>
+          <div style={{
+            position: 'absolute', width: '550px', height: '550px', borderRadius: '50%',
+            filter: 'blur(100px)', background: `radial-gradient(circle, ${accentColor}40 0%, transparent 70%)`,
+            top: '-100px', left: '-100px',
+          }} />
+          <div style={{
+            position: 'absolute', width: '500px', height: '500px', borderRadius: '50%',
+            filter: 'blur(100px)', background: 'radial-gradient(circle, rgba(168, 85, 247, 0.35) 0%, transparent 70%)',
+            top: '30%', right: '-120px',
+          }} />
+          <div style={{
+            position: 'absolute', width: '450px', height: '450px', borderRadius: '50%',
+            filter: 'blur(100px)', background: 'radial-gradient(circle, rgba(236, 72, 153, 0.25) 0%, transparent 70%)',
+            bottom: '-80px', left: '20%',
+          }} />
+        </div>
       )}
 
       <div style={{ position: 'relative', zIndex: 1 }}>
