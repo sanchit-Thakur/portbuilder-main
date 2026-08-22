@@ -731,29 +731,7 @@ ${skills.length > 0 ? `\\section{Skills}
               fontWeight: 600,
             }}
           >
-            🌟 Aarav Sharma (Featured AI Sample)
-          </button>
-          <button
-            onClick={() => handleSelectTemplate('sanchit')}
-            className="btn btn-sm"
-            style={{
-              background: activeTemplateName === 'sanchit' && lang === 'latex' ? 'var(--color-primary)' : 'rgba(255,255,255,0.05)',
-              color: activeTemplateName === 'sanchit' && lang === 'latex' ? '#fff' : 'var(--color-text)',
-              border: '1px solid var(--color-border)',
-            }}
-          >
-            🤖 Sanchit Thakur (AI & Data Science)
-          </button>
-          <button
-            onClick={() => handleSelectTemplate('alex')}
-            className="btn btn-sm"
-            style={{
-              background: activeTemplateName === 'alex' && lang === 'latex' ? 'var(--color-primary)' : 'rgba(255,255,255,0.05)',
-              color: activeTemplateName === 'alex' && lang === 'latex' ? '#fff' : 'var(--color-text)',
-              border: '1px solid var(--color-border)',
-            }}
-          >
-            💻 Alex Rivera (Full-Stack Cloud)
+            🌟 Aarav Sharma (Featured ATS Template)
           </button>
         </div>
 
