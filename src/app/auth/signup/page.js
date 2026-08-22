@@ -1,11 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
-export default function SignupPage() {
+function SignupForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectPath = searchParams.get('redirect') || '/dashboard';
   const [form, setForm] = useState({ fullName: '', username: '', email: '', password: '' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -23,7 +25,7 @@ export default function SignupPage() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
-      router.push('/dashboard');
+      router.push(redirectPath);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -109,7 +111,7 @@ export default function SignupPage() {
 
         <p style={{ marginTop: '2rem', textAlign: 'center', fontSize: 'var(--text-sm)', color: 'var(--color-text-muted)' }}>
           Already have an account?{' '}
-          <Link href="/auth/login" style={{ color: 'var(--color-primary)', fontWeight: 600 }}>Sign in</Link>
+          <Link href={redirectPath !== '/dashboard' ? `/auth/login?redirect=${encodeURIComponent(redirectPath)}` : '/auth/login'} style={{ color: 'var(--color-primary)', fontWeight: 600 }}>Sign in</Link>
         </p>
       </div>
 
@@ -174,5 +176,17 @@ export default function SignupPage() {
         }
       `}</style>
     </div>
+  );
+}
+
+export default function SignupPage() {
+  return (
+    <Suspense fallback={
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', background: 'var(--color-bg)' }}>
+        <div className="spinner spinner-lg"></div>
+      </div>
+    }>
+      <SignupForm />
+    </Suspense>
   );
 }

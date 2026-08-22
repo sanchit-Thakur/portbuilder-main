@@ -43,9 +43,72 @@
 
 ## 🛠️ Tech Stack
 
-```mermaid
-graph TD
-    A[Client UI / Next.js & Tailwind CSS] --> B[State Management / Zustand]
-    A --> C[API Routes & Server Actions]
-    C --> D[(SQLite - Local Dev)]
-    C --> E[(MySQL - Production)]
+* **Frontend:** React / Next.js, Vanilla CSS & Glassmorphism Design System
+* **Icons & UI:** Custom Glass & SVG Components
+* **State Management:** React Hooks & Context
+* **Database:** SQLite (local zero-config) / Cloud MySQL (production serverless via `DATABASE_URL`)
+* **Deployment:** Vercel
+
+---
+
+## 🚀 Getting Started
+
+Follow these steps to run PortBuilder locally on your machine.
+
+### Prerequisites
+
+* [Node.js](https://nodejs.org/) (v18.0.0 or higher)
+* [npm](https://www.npmjs.com/) or [yarn](https://yarnpkg.com/)
+
+### Installation & Local Development
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/sanchit-Thakur/portbuilder-main.git
+   cd portbuilder-main
+   ```
+
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+
+3. **Configure Environment Variables:**
+   Copy `.env.example` to `.env.local`:
+   ```bash
+   cp .env.example .env.local
+   ```
+   *For zero-config local development, PortBuilder automatically initializes an SQLite database in `./data/portbuilder.db` if MySQL credentials are not set.*
+
+4. **Run the Development Server:**
+   ```bash
+   npm run dev
+   ```
+   Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+---
+
+## 🌐 Deploying to Production (Vercel / Railway / Cloud)
+
+### Environment Variables
+
+Set the following environment variables in your **Vercel Project Settings > Environment Variables**:
+
+| Key | Example Value | Description |
+|---|---|---|
+| `JWT_SECRET` | `your-secure-random-secret` | **Required.** Secret key used to sign session JWT tokens. |
+| `DATABASE_URL` | `mysql://user:pass@host:3306/portfolio_builder` | **Recommended.** Connection string for cloud MySQL (TiDB Cloud, Railway, Aiven, Supabase). |
+| `MYSQL_HOST` | `gateway01.us-east-1.prod.aws.tidbcloud.com` | Alternative: Database host URL |
+| `MYSQL_PORT` | `3306` | Alternative: Database port (default: 3306) |
+| `MYSQL_USER` | `root` | Alternative: Database user |
+| `MYSQL_PASSWORD` | `your-db-password` | Alternative: Database password |
+| `MYSQL_DATABASE` | `portfolio_builder` | Alternative: Database name |
+
+> 💡 **Tip for Vercel Deployments:** Because Vercel serverless functions are stateless, connecting a remote MySQL database (such as **TiDB Cloud Serverless (Free)**, **Railway MySQL**, or **Aiven**) using `DATABASE_URL` ensures all your portfolio edits and user registrations are permanently saved across all function instances.
+
+### Deployment Steps (Vercel)
+
+1. Push your code to GitHub.
+2. Import the project into [Vercel](https://vercel.com).
+3. Add `JWT_SECRET` and your `DATABASE_URL` (or `MYSQL_*` credentials) in Vercel.
+4. Click **Deploy**. Tables and schema will be auto-migrated on your first request!

@@ -22,10 +22,16 @@ export default function DashboardLayout({ children }) {
 
   useEffect(() => {
     fetch('/api/portfolio')
-      .then(r => r.json())
-      .then(d => { if (d.user) setUser(d.user); })
+      .then(async (r) => {
+        if (r.status === 401) {
+          router.push(`/auth/login?redirect=${encodeURIComponent(pathname)}`);
+          return null;
+        }
+        return r.json();
+      })
+      .then(d => { if (d?.user) setUser(d.user); })
       .catch(() => {});
-  }, []);
+  }, [pathname, router]);
 
   const handleLogout = async () => {
     await fetch('/api/auth/logout', { method: 'POST' });

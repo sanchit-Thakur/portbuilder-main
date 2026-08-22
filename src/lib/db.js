@@ -16,6 +16,41 @@ if (!globalForDb._portbuilderDbState) {
 
 const dbState = globalForDb._portbuilderDbState;
 
+function getMysqlConfig() {
+  const connectionUri = process.env.DATABASE_URL || process.env.MYSQL_URL || process.env.MYSQL_URI;
+  if (connectionUri) {
+    try {
+      const url = new URL(connectionUri);
+      const host = url.hostname;
+      const port = url.port ? parseInt(url.port) : 3306;
+      const user = decodeURIComponent(url.username || '');
+      const password = decodeURIComponent(url.password || '');
+      const database = url.pathname.replace(/^\//, '') || 'portfolio_builder';
+      const isLocal = host === 'localhost' || host === '127.0.0.1';
+      const ssl = (!isLocal || process.env.MYSQL_SSL === 'true') ? { rejectUnauthorized: false } : undefined;
+      return { host, port, user, password, database, ssl };
+    } catch (e) {
+      console.warn('⚠️ Could not parse connection URL, falling back to direct env vars:', e.message);
+    }
+  }
+
+  if (process.env.MYSQL_HOST && process.env.MYSQL_USER) {
+    const host = process.env.MYSQL_HOST;
+    const isLocal = host === 'localhost' || host === '127.0.0.1';
+    const ssl = (!isLocal || process.env.MYSQL_SSL === 'true') ? { rejectUnauthorized: false } : undefined;
+    return {
+      host,
+      port: parseInt(process.env.MYSQL_PORT || '3306'),
+      user: process.env.MYSQL_USER,
+      password: process.env.MYSQL_PASSWORD || '',
+      database: process.env.MYSQL_DATABASE || 'portfolio_builder',
+      ssl,
+    };
+  }
+
+  return null;
+}
+
 export async function getEngine() {
   if (dbState.dbEngine) return dbState.dbEngine;
 
@@ -24,8 +59,8 @@ export async function getEngine() {
   }
 
   dbState.getEnginePromise = (async () => {
-    // Dynamically load .env.local if MYSQL_HOST is not yet loaded into process.env
-    if (!process.env.MYSQL_HOST) {
+    // Dynamically load .env.local if MYSQL_HOST / DATABASE_URL is not yet loaded into process.env
+    if (!process.env.MYSQL_HOST && !process.env.DATABASE_URL) {
       try {
         const envPath = path.join(process.cwd(), '.env.local');
         if (fs.existsSync(envPath)) {
@@ -40,46 +75,48 @@ export async function getEngine() {
       } catch {}
     }
 
-    // Check if MySQL connection environment variables are explicitly provided
-    const hasMysqlConfig = process.env.MYSQL_HOST && process.env.MYSQL_USER;
+    const mysqlConfig = getMysqlConfig();
 
-    if (hasMysqlConfig) {
+    if (mysqlConfig) {
       try {
         const mysql = await import('mysql2/promise');
-        const dbName = process.env.MYSQL_DATABASE || 'portfolio_builder';
 
-        // Bootstrap: Create database if it doesn't exist yet before creating pool
+        // Bootstrap: Attempt to create database if permitted (e.g. local MySQL)
         try {
           const bootstrapConnection = await mysql.createConnection({
-            host: process.env.MYSQL_HOST,
-            user: process.env.MYSQL_USER,
-            password: process.env.MYSQL_PASSWORD || '',
-            port: parseInt(process.env.MYSQL_PORT || '3306'),
-            connectTimeout: 3000,
+            host: mysqlConfig.host,
+            user: mysqlConfig.user,
+            password: mysqlConfig.password,
+            port: mysqlConfig.port,
+            ssl: mysqlConfig.ssl,
+            connectTimeout: 4000,
           });
-          await bootstrapConnection.execute(`CREATE DATABASE IF NOT EXISTS \`${dbName}\``);
+          await bootstrapConnection.execute(`CREATE DATABASE IF NOT EXISTS \`${mysqlConfig.database}\``);
           await bootstrapConnection.end();
         } catch (bootstrapErr) {
-          console.warn('⚠️ MySQL bootstrap warning:', bootstrapErr.message);
+          // Cloud providers may restrict CREATE DATABASE, which is normal
         }
 
         dbState.mysqlPool = mysql.createPool({
-          host: process.env.MYSQL_HOST,
-          user: process.env.MYSQL_USER,
-          password: process.env.MYSQL_PASSWORD || '',
-          database: dbName,
-          port: parseInt(process.env.MYSQL_PORT || '3306'),
+          host: mysqlConfig.host,
+          user: mysqlConfig.user,
+          password: mysqlConfig.password,
+          database: mysqlConfig.database,
+          port: mysqlConfig.port,
+          ssl: mysqlConfig.ssl,
           waitForConnections: true,
-          connectionLimit: 10,
+          connectionLimit: 5,
           queueLimit: 0,
-          connectTimeout: 3000,
+          connectTimeout: 5000,
+          enableKeepAlive: true,
+          keepAliveInitialDelay: 10000,
         });
 
         // Quick ping test
         const conn = await dbState.mysqlPool.getConnection();
         conn.release();
         dbState.dbEngine = 'mysql';
-        console.log('✅ Using MySQL database engine');
+        console.log(`✅ Using MySQL database engine (${mysqlConfig.host}:${mysqlConfig.port}/${mysqlConfig.database})`);
         return dbState.dbEngine;
       } catch (err) {
         console.warn('⚠️ MySQL connection failed, falling back to SQLite:', err.message);
@@ -191,19 +228,6 @@ export async function initDatabase() {
   const engine = await getEngine();
 
   if (engine === 'mysql') {
-    const mysql = await import('mysql2/promise');
-    const dbName = process.env.MYSQL_DATABASE || 'portfolio_builder';
-    try {
-      const bootstrapConnection = await mysql.createConnection({
-        host: process.env.MYSQL_HOST || 'localhost',
-        user: process.env.MYSQL_USER || 'root',
-        password: process.env.MYSQL_PASSWORD || '',
-        port: parseInt(process.env.MYSQL_PORT || '3306'),
-      });
-      await bootstrapConnection.execute(`CREATE DATABASE IF NOT EXISTS \`${dbName}\``);
-      await bootstrapConnection.end();
-    } catch {}
-
     const connection = await dbState.mysqlPool.getConnection();
     try {
       await connection.execute(`

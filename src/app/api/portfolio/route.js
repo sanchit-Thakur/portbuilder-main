@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { query, queryOne, ensureDbInitialized } from '@/lib/db';
 import { getCurrentUser } from '@/lib/auth';
 import { generateId } from '@/lib/utils';
+import { DEFAULT_SECTIONS_ORDER } from '@/lib/constants';
 
 export async function GET() {
   try {
@@ -11,14 +12,23 @@ export async function GET() {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const portfolio = await queryOne('SELECT * FROM portfolios WHERE user_id = ?', [user.id]);
+    let portfolio = await queryOne('SELECT * FROM portfolios WHERE user_id = ?', [user.id]);
     if (!portfolio) {
-      return NextResponse.json({ error: 'Portfolio not found' }, { status: 404 });
+      const portfolioId = generateId();
+      await query(
+        `INSERT INTO portfolios (id, user_id, hero_title, sections_order) VALUES (?, ?, ?, ?)`,
+        [portfolioId, user.id, user.full_name || user.username, JSON.stringify(DEFAULT_SECTIONS_ORDER)]
+      );
+      portfolio = await queryOne('SELECT * FROM portfolios WHERE id = ?', [portfolioId]);
     }
 
     // Parse JSON fields
-    if (portfolio.sections_order && typeof portfolio.sections_order === 'string') {
-      portfolio.sections_order = JSON.parse(portfolio.sections_order);
+    if (portfolio && portfolio.sections_order && typeof portfolio.sections_order === 'string') {
+      try {
+        portfolio.sections_order = JSON.parse(portfolio.sections_order);
+      } catch {
+        portfolio.sections_order = DEFAULT_SECTIONS_ORDER;
+      }
     }
 
     const skills = await query('SELECT * FROM skills WHERE portfolio_id = ? ORDER BY sort_order', [portfolio.id]);
@@ -58,9 +68,14 @@ export async function PUT(request) {
     }
 
     const data = await request.json();
-    const portfolio = await queryOne('SELECT * FROM portfolios WHERE user_id = ?', [user.id]);
+    let portfolio = await queryOne('SELECT * FROM portfolios WHERE user_id = ?', [user.id]);
     if (!portfolio) {
-      return NextResponse.json({ error: 'Portfolio not found' }, { status: 404 });
+      const portfolioId = generateId();
+      await query(
+        `INSERT INTO portfolios (id, user_id, hero_title, sections_order) VALUES (?, ?, ?, ?)`,
+        [portfolioId, user.id, user.full_name || user.username, JSON.stringify(DEFAULT_SECTIONS_ORDER)]
+      );
+      portfolio = await queryOne('SELECT * FROM portfolios WHERE id = ?', [portfolioId]);
     }
 
     // Update portfolio main fields

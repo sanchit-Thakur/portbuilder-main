@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
 import { generateId } from '@/lib/utils';
 import { SKILL_CATEGORIES } from '@/lib/constants';
 import PortfolioRenderer from '@/components/portfolio/PortfolioRenderer';
@@ -19,6 +20,7 @@ const TABS = [
 const PRESET_COLORS = ['#6C63FF', '#00d4aa', '#ff6b35', '#3a86ff', '#ec4899', '#f59e0b', '#10b981'];
 
 export default function EditPortfolio() {
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState('hero');
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -28,13 +30,21 @@ export default function EditPortfolio() {
 
   useEffect(() => {
     fetch('/api/portfolio')
-      .then(r => r.json())
+      .then(async (r) => {
+        if (r.status === 401) {
+          router.push('/auth/login?redirect=/dashboard/edit');
+          return null;
+        }
+        return r.json();
+      })
       .then(d => {
-        setData(d);
+        if (d) {
+          setData(d);
+        }
         setLoading(false);
       })
       .catch(() => setLoading(false));
-  }, []);
+  }, [router]);
 
   const showToast = (msg, type = 'success') => {
     setToast({ msg, type });
@@ -95,13 +105,21 @@ export default function EditPortfolio() {
   }
 
   if (!data || !data.portfolio || data.error) {
+    const isUnauthorized = data?.error === 'Unauthorized' || data?.error === 'Invalid token';
     return (
-      <div style={{ padding: '3rem', textAlign: 'center', maxWidth: '500px', margin: '4rem auto' }}>
-        <h2 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: '1rem' }}>Portfolio Not Found</h2>
-        <p style={{ color: 'var(--color-text-muted)', marginBottom: '1.5rem', lineHeight: 1.6 }}>
-          {data?.error || 'Please sign in to access your portfolio editor.'}
+      <div style={{ padding: '3rem', textAlign: 'center', maxWidth: '520px', margin: '4rem auto', background: 'var(--color-surface)', borderRadius: 'var(--radius-xl)', border: '1px solid var(--color-border)' }}>
+        <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>{isUnauthorized ? '🔒' : '⚠️'}</div>
+        <h2 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: '0.75rem' }}>
+          {isUnauthorized ? 'Authentication Required' : 'Unable to Load Portfolio'}
+        </h2>
+        <p style={{ color: 'var(--color-text-muted)', marginBottom: '1.5rem', lineHeight: 1.6, fontSize: '0.95rem' }}>
+          {isUnauthorized
+            ? 'Please sign in to access and edit your portfolio settings and content.'
+            : (data?.error || 'We could not load your portfolio. Please sign in or try again.')}
         </p>
-        <a href="/auth/login" className="btn btn-primary">Sign In</a>
+        <a href="/auth/login?redirect=/dashboard/edit" className="btn btn-primary">
+          {isUnauthorized ? 'Sign In to Edit' : 'Go to Login'}
+        </a>
       </div>
     );
   }

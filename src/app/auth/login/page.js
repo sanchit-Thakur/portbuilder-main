@@ -1,11 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
-export default function LoginPage() {
+function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectPath = searchParams.get('redirect') || '/dashboard';
   const [form, setForm] = useState({ email: '', password: '' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -23,7 +25,7 @@ export default function LoginPage() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
-      router.push('/dashboard');
+      router.push(redirectPath);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -87,7 +89,7 @@ export default function LoginPage() {
 
         <p style={{ marginTop: '2rem', textAlign: 'center', fontSize: 'var(--text-sm)', color: 'var(--color-text-muted)' }}>
           Don&apos;t have an account?{' '}
-          <Link href="/auth/signup" style={{ color: 'var(--color-primary)', fontWeight: 600 }}>Create one free</Link>
+          <Link href={redirectPath !== '/dashboard' ? `/auth/signup?redirect=${encodeURIComponent(redirectPath)}` : '/auth/signup'} style={{ color: 'var(--color-primary)', fontWeight: 600 }}>Create one free</Link>
         </p>
       </div>
 
@@ -152,5 +154,17 @@ export default function LoginPage() {
         }
       `}</style>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', background: 'var(--color-bg)' }}>
+        <div className="spinner spinner-lg"></div>
+      </div>
+    }>
+      <LoginForm />
+    </Suspense>
   );
 }
