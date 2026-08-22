@@ -15,6 +15,7 @@ const TABS = [
   { id: 'education', label: '🎓 Education', icon: '🎓' },
   { id: 'testimonials', label: '💬 Testimonials', icon: '💬' },
   { id: 'contact', label: '📧 Contact', icon: '📧' },
+  { id: 'sections', label: '🔀 Sections Order', icon: '🔀' },
 ];
 
 const PRESET_COLORS = ['#6C63FF', '#00d4aa', '#ff6b35', '#3a86ff', '#ec4899', '#f59e0b', '#10b981'];
@@ -178,6 +179,7 @@ export default function EditPortfolio() {
           {activeTab === 'education' && <EducationEditor data={data} setData={setData} />}
           {activeTab === 'testimonials' && <TestimonialsEditor data={data} setData={setData} />}
           {activeTab === 'contact' && <ContactEditor data={data} updatePortfolio={updatePortfolio} />}
+          {activeTab === 'sections' && <SectionsEditor data={data} updatePortfolio={updatePortfolio} />}
         </div>
 
         {/* Live Preview Panel */}
@@ -775,3 +777,105 @@ function ContactEditor({ data, updatePortfolio }) {
     </div>
   );
 }
+
+/* ── Sections Order Editor ───────────────────────────────── */
+function SectionsEditor({ data, updatePortfolio }) {
+  const currentOrder = Array.isArray(data?.portfolio?.sections_order) && data.portfolio.sections_order.length > 0
+    ? data.portfolio.sections_order
+    : ['hero', 'about', 'skills', 'projects', 'experience', 'education', 'testimonials', 'contact'];
+
+  const sectionLabels = {
+    hero: '🏠 Hero (Header & Tagline)',
+    about: '👤 About (Bio & Profile Story)',
+    skills: '⚡ Skills & Proficiency Bars',
+    projects: '💼 Featured Projects Grid',
+    experience: '📋 Work Experience Timeline',
+    education: '🎓 Education & Degrees',
+    testimonials: '💬 Testimonials & Endorsements',
+    contact: '📧 Contact & Direct Message Form',
+  };
+
+  const moveSection = (index, direction) => {
+    const newIndex = index + direction;
+    if (newIndex < 0 || newIndex >= currentOrder.length) return;
+    const updated = [...currentOrder];
+    const temp = updated[index];
+    updated[index] = updated[newIndex];
+    updated[newIndex] = temp;
+    updatePortfolio('sections_order', updated);
+  };
+
+  const resetOrder = () => {
+    updatePortfolio('sections_order', ['hero', 'about', 'skills', 'projects', 'experience', 'education', 'testimonials', 'contact']);
+  };
+
+  return (
+    <div className="editor-section">
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
+        <div>
+          <h2 style={{ fontSize: 'var(--text-xl)', fontWeight: 700 }}>Sections & Layout Order</h2>
+          <p className="text-muted" style={{ fontSize: '0.9rem', marginTop: '0.25rem' }}>
+            Arrange the order in which sections appear on your live portfolio.
+          </p>
+        </div>
+        <button type="button" className="btn btn-secondary btn-sm" onClick={resetOrder}>
+          🔄 Reset Default Order
+        </button>
+      </div>
+
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+        {currentOrder.map((sectionKey, i) => (
+          <div
+            key={sectionKey}
+            className="card"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              padding: '1rem 1.25rem',
+              background: 'var(--color-bg-tertiary)',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+              <span style={{
+                width: '28px', height: '28px', borderRadius: '50%',
+                background: 'rgba(108, 99, 255, 0.15)', color: 'var(--color-primary-light)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontWeight: 700, fontSize: '0.85rem'
+              }}>
+                {i + 1}
+              </span>
+              <span style={{ fontWeight: 600, fontSize: '0.95rem' }}>
+                {sectionLabels[sectionKey] || sectionKey}
+              </span>
+            </div>
+
+            <div style={{ display: 'flex', gap: '0.5rem' }}>
+              <button
+                type="button"
+                className="btn btn-secondary btn-sm"
+                onClick={() => moveSection(i, -1)}
+                disabled={i === 0}
+                style={{ opacity: i === 0 ? 0.35 : 1, padding: '0.35rem 0.65rem' }}
+                title="Move Up"
+              >
+                ⬆️
+              </button>
+              <button
+                type="button"
+                className="btn btn-secondary btn-sm"
+                onClick={() => moveSection(i, 1)}
+                disabled={i === currentOrder.length - 1}
+                style={{ opacity: i === currentOrder.length - 1 ? 0.35 : 1, padding: '0.35rem 0.65rem' }}
+                title="Move Down"
+              >
+                ⬇️
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+

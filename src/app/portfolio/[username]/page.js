@@ -3,6 +3,22 @@ import { query, queryOne, ensureDbInitialized } from '@/lib/db';
 import { THEMES } from '@/lib/constants';
 import PortfolioClient from './PortfolioClient';
 
+export async function generateViewport({ params }) {
+  const { username } = await params;
+  try {
+    await ensureDbInitialized();
+    const user = await queryOne('SELECT id FROM users WHERE username = ?', [username]);
+    if (!user) return {};
+    const portfolio = await queryOne('SELECT theme FROM portfolios WHERE user_id = ?', [user.id]);
+    const theme = THEMES[portfolio?.theme] || THEMES['minimal-elegance'];
+    return {
+      themeColor: theme.colors.accent,
+    };
+  } catch {
+    return {};
+  }
+}
+
 export async function generateMetadata({ params }) {
   const { username } = await params;
   try {
@@ -11,7 +27,6 @@ export async function generateMetadata({ params }) {
     if (!user) return { title: 'Portfolio Not Found' };
 
     const portfolio = await queryOne('SELECT * FROM portfolios WHERE user_id = ?', [user.id]);
-    const theme = THEMES[portfolio?.theme] || THEMES['minimal-elegance'];
 
     return {
       title: `${user.full_name || user.username} — Portfolio`,
@@ -21,7 +36,6 @@ export async function generateMetadata({ params }) {
         description: portfolio?.bio || portfolio?.tagline || 'Professional portfolio',
         type: 'website',
       },
-      themeColor: theme.colors.accent,
     };
   } catch {
     return { title: 'Portfolio' };

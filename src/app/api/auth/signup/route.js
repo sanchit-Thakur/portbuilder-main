@@ -55,11 +55,55 @@ export async function POST(request) {
       [userId, email, passwordHash, finalUsername, fullName || '']
     );
 
-    // Create default portfolio
+    // Create default portfolio with starter data
     const portfolioId = generateId();
+    const displayName = fullName || finalUsername;
     await query(
-      `INSERT INTO portfolios (id, user_id, hero_title, sections_order) VALUES (?, ?, ?, ?)`,
-      [portfolioId, userId, fullName || finalUsername, JSON.stringify(DEFAULT_SECTIONS_ORDER)]
+      `INSERT INTO portfolios (id, user_id, theme, hero_title, hero_subtitle, tagline, bio, sections_order) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        portfolioId,
+        userId,
+        'glassmorphism-modern',
+        displayName,
+        'Full-Stack Developer & Creator',
+        'Crafting intuitive digital experiences and modern web applications.',
+        `Hi! I'm ${displayName}, a passionate software developer building modern web experiences. Welcome to my portfolio!`,
+        JSON.stringify(DEFAULT_SECTIONS_ORDER)
+      ]
+    );
+
+    // Seed starter skills
+    const starterSkills = [
+      { name: 'JavaScript / TypeScript', category: 'Languages', proficiency: 90 },
+      { name: 'React & Next.js', category: 'Frontend', proficiency: 95 },
+      { name: 'Node.js & APIs', category: 'Backend', proficiency: 85 },
+      { name: 'UI / UX & CSS', category: 'Design', proficiency: 88 },
+    ];
+    for (let i = 0; i < starterSkills.length; i++) {
+      await query(
+        'INSERT INTO skills (id, portfolio_id, name, category, proficiency, sort_order) VALUES (?, ?, ?, ?, ?, ?)',
+        [generateId(), portfolioId, starterSkills[i].name, starterSkills[i].category, starterSkills[i].proficiency, i]
+      );
+    }
+
+    // Seed starter project
+    await query(
+      `INSERT INTO projects (id, portfolio_id, title, description, short_description, tech_stack, live_url, github_url, category, impact_metrics, featured, sort_order)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        generateId(),
+        portfolioId,
+        'My First Showcase Project',
+        'A full-stack web application designed with modern glassmorphism UI, real-time interactivity, and responsive layouts.',
+        'A full-stack web application with modern aesthetics.',
+        JSON.stringify(['React', 'Next.js', 'CSS3']),
+        '#',
+        '#',
+        'Web Application',
+        '100% Responsive & SEO Optimized',
+        1,
+        0
+      ]
     );
 
     // Set auth cookie

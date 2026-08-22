@@ -194,14 +194,13 @@ export async function getEngine() {
 
 export async function query(sql, params = []) {
   const engine = await getEngine();
+  const sanitizedParams = params.map(p => (p === undefined ? null : typeof p === 'boolean' ? (p ? 1 : 0) : p));
   
   if (engine === 'mysql') {
-    const [rows] = await dbState.mysqlPool.execute(sql, params);
+    const [rows] = await dbState.mysqlPool.execute(sql, sanitizedParams);
     return rows;
   } else {
     // SQLite query execution
-    // Sanitize JSON array bindings and undefined parameters for SQLite
-    const sanitizedParams = params.map(p => (p === undefined ? null : typeof p === 'boolean' ? (p ? 1 : 0) : p));
     const trimmedSql = sql.trim();
     const isSelect = /^SELECT/i.test(trimmedSql);
     
