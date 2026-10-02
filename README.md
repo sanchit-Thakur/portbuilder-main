@@ -17,8 +17,7 @@
   <a href="#-environment-variables">Configuration</a> • 
   <a href="#-deployment">Deployment</a>
 </p>
-
----
+----
 
 </div>
 
