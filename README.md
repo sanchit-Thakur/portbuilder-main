@@ -14,7 +14,7 @@
   <a href="#-key-features">Key Features</a> •
   <a href="#-tech-stack">Tech Stack</a> •
   <a href="#-getting-started">Getting Started</a> •
-  <a href="#-environment-variables">Configuration</a> •
+  <a href="#-environment-variables">Configuration</a> • 
   <a href="#-deployment">Deployment</a>
 </p>
 
